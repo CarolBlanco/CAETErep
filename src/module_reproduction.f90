@@ -15,7 +15,7 @@ contains
 
 
         ! Declaração das variáveis de saída
-        integer(i_4), intent(out) :: n_seed 
+        real(i_4), intent(out) :: n_seed 
         real(r_8), intent(out) :: npp_after 
         !real(r_8), intent(out) :: seed_mass
         !real(r_8), intent(out) :: seed_bank
