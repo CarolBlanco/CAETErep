@@ -386,7 +386,7 @@ contains
 
             !seed_bank(ri) = new_seed_bank(ri) !!!!!!!!!!! COLOQUEI P ATUALIZAR O BANCO APENAS NA BUDGET
             if (n_seed(ri) .gt. 0) then
-               seed_bank_new(ri) = seed_bank(ri) + n_seed(ri)
+               seed_bank_new(ri) = int(seed_bank(ri) + n_seed(ri))
            !else
                seed_bank(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
            endif
@@ -398,7 +398,7 @@ contains
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
          if (seed_bank(ri)>0 .and. temp .ge. 23.0) then !CAROL
 
-            germinated_seeds(ri) = seed_bank(ri)*0.5 !!GERMINATION
+            germinated_seeds(ri) = int(seed_bank(ri)*0.5) !!GERMINATION
             seed_bank(ri) = seed_bank(ri) - germinated_seeds(ri) !!UPDATE SEEDBANK
 
             ! Garantindo que o banco de sementes não fique negativo
