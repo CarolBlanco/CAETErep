@@ -140,7 +140,7 @@ contains
       !c     Carbon Cycle
       real(r_4),dimension(:),allocatable :: ph     !Canopy gross photosynthesis (kgC/m2/yr)
       real(r_4),dimension(:),allocatable :: ar     !Autotrophic respiration (kgC/m2/yr)
-      real(r_4),dimension(:),allocatable :: nppa   !Net primary productivity / auxiliar
+      real(r_8),dimension(:),allocatable :: nppa   !Net primary productivity / auxiliar
       real(r_8),dimension(:),allocatable :: laia   !Leaf area index (m2 leaf/m2 area)
       real(r_4),dimension(:),allocatable :: rc2    !Canopy resistence (s/m)
       real(r_4),dimension(:),allocatable :: f1     !
