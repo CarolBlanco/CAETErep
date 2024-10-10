@@ -1012,7 +1012,6 @@ class grd:
                     self.vp_dcf = daily_output['delta_cveg'][2][self.vp_lsid]
                     self.vp_sto = daily_output['stodbg'][:, self.vp_lsid]
                     self.sp_uptk_costs = daily_output['npp2pay'][self.vp_lsid]
-                    self.vp_seed_bank = daily_output['seed_bank_int'][self.vp_lsid] #NEWW
 
 
                 # UPDATE STATE VARIABLES
