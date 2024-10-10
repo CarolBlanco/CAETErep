@@ -140,7 +140,7 @@ contains
       !c     Carbon Cycle
       real(r_4),dimension(:),allocatable :: ph     !Canopy gross photosynthesis (kgC/m2/yr)
       real(r_4),dimension(:),allocatable :: ar     !Autotrophic respiration (kgC/m2/yr)
-      real(r_8),dimension(:),allocatable :: nppa   !Net primary productivity / auxiliar
+      real(r_4),dimension(:),allocatable :: nppa   !Net primary productivity / auxiliar
       real(r_8),dimension(:),allocatable :: laia   !Leaf area index (m2 leaf/m2 area)
       real(r_4),dimension(:),allocatable :: rc2    !Canopy resistence (s/m)
       real(r_4),dimension(:),allocatable :: f1     !
@@ -152,11 +152,11 @@ contains
       real(r_4),dimension(:),allocatable :: cue
       real(r_4),dimension(:),allocatable :: c_def
       
-      real(i_4),dimension(:),allocatable :: seed_bank   !NEW ***************
-      real(i_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
-      real(i_4),dimension(:),allocatable :: n_seed    !NEW ***************
-      real(i_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
-      real(i_4),dimension(:),allocatable :: remaining_npp   !NEW ***************
+      real(r_4),dimension(:),allocatable :: seed_bank   !NEW ***************
+      real(r_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
+      real(r_4),dimension(:),allocatable :: n_seed    !NEW ***************
+      real(r_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
+      real(r_4),dimension(:),allocatable :: remaining_npp   !NEW ***************
 
       real(r_8),dimension(:),allocatable :: cl1_int
       real(r_8),dimension(:),allocatable :: cf1_int
