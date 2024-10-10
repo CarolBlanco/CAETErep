@@ -386,26 +386,27 @@ contains
 
             !seed_bank(ri) = new_seed_bank(ri) !!!!!!!!!!! COLOQUEI P ATUALIZAR O BANCO APENAS NA BUDGET
             if (n_seed(ri) .gt. 0) then
-               seed_bank_new(ri) = int(seed_bank(ri) + n_seed(ri))
+               seed_bank_new(ri) = nint(seed_bank(ri) + n_seed(ri))
            !else
                seed_bank(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
            endif
-            print *, "Tamanho do banco de sementes após a produção_na_budget:", seed_bank_new(ri)
+            print *, "Tamanho do banco de sementes após a produção_na_budget:", seed_bank(ri)
 
          endif
 
-
-         !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seed_bank(ri)>0 .and. temp .ge. 23.0) then !CAROL
-
-            germinated_seeds(ri) = int(seed_bank(ri)*0.5) !!GERMINATION
-            seed_bank(ri) = int(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
-         endif
-         
          !Garantindo que o banco de sementes não fique negativo
          if (seed_bank(ri) .lt. 0.0D0)then 
             seed_bank(ri) = 0.0D0
          endif
+         
+         !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
+         if (seed_bank(ri) .gt. 0 .and. temp .ge. 23.0) then !CAROL
+
+            germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
+            seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
+         endif
+         
+         
 
          !! ANNUAL SEEDBANK DECAY
          !if (n_days .eq. 365) then
