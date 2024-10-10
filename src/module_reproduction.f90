@@ -10,7 +10,7 @@ contains
 
         ! Declaração das variáveis de entrada
         real(r_8), intent(in) :: height1
-        real(r_8), intent(in) :: nppa
+        real(r_4), intent(in) :: nppa
         !real(r_8), intent(in) :: seed_bank  
 
 
