@@ -30,39 +30,38 @@ contains
 
         ! Calculando a massa da semente
         height = height1  ! Altura da planta em metros
-        npp_rep = nppa * 0.04  ! 4% do NPP disponível para reprodução
-        npp_after = nppa - npp_rep !remaining npp
-
+        
         print *, "valor de npp_rep:", npp_rep
         print *, "valor de nppa", nppa
 
         ! Nova fórmula para a massa da semente em miligramas (mg)
-        if (height1 .gt. 5.0) then
+        !if (height1 .gt. 5.0) then
+
+        if (height .gt. 5.0) then
             seed_mass_log = (0.039 * height) + 1.1951
+            !print *, "seed_mass_log", seed_mass_log
+            ! Converte a massa da semente de escala logarítmica para normal (linear)
+            seed_mass = ((10.0 ** seed_mass_log) / 1.0D6)
+            print *, "Altura da planta:", height, "m, Massa da semente:", seed_mass, "kg"
+
+            npp_rep = nppa * 0.04  ! 4% do NPP disponível para reprodução
+             ! Calculando o número de sementes produzidas
+            n_seed = int(npp_rep / seed_mass)
+            print *, "n_seed:", n_seed
+            npp_after = nppa - npp_rep !remaining npp
         else
-            seed_mass_log = 0.0
+            n_seed = 0.0
+            nppa = npp_after
         endif
 
-        print *, "seed_mass_log", seed_mass_log
-        ! Converte a massa da semente de escala logarítmica para normal (linear)
-        seed_mass = ((10.0 ** seed_mass_log) / 1.0D6)
-        print *, "seed_mass", seed_mass
-
-        ! Convertendo a massa da semente para quilogramas (kg) - caso seja preciso
-        !seed_mass_one = (seed_mass / 1.0D6)
-        !print *, "seed_mass_one", seed_mass_one
-
-        
-        ! Imprime a massa da semente
-        print *, "Altura da planta:", height, "m, Massa da semente:", seed_mass, "kg"
+       
 
         ! Verificando se a massa da semente é menor que o limite de 8 mg
         !if (seed_mass < 8.0) then
         !    seed_mass = 8.0
         !endif
 
-        ! Calculando o número de sementes
-        n_seed = int(npp_rep / seed_mass)
+        
         !n_seed = int(n_seed)  ! Garantindo que o número de sementes seja um valor inteiro
 
         ! Garantindo que o número de sementes seja um valor inteiro
@@ -76,7 +75,7 @@ contains
 
         !print *, "new_seed_bank (antes da atualização)_module_reproduction:", new_seed_bank
         !print *, "seed_bank(antes da atualização)_module_reproduction:", new_seed_bank
-        print *, "n_seed:", n_seed
+      
 
         ! Atualização do banco de sementes
         !if (n_seed .gt. 0) then
