@@ -31,8 +31,8 @@ contains
         ! Calculando a massa da semente
         height = height1  ! Altura da planta em metros
         
-        print *, "valor de npp_rep:", npp_rep
-        print *, "valor de nppa", nppa
+        !print *, "valor de npp_rep:", npp_rep
+        !print *, "valor de nppa", nppa
 
         ! Nova fórmula para a massa da semente em miligramas (mg)
         !if (height1 .gt. 5.0) then

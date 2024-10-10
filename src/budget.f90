@@ -400,11 +400,13 @@ contains
 
             germinated_seeds(ri) = int(seed_bank(ri)*0.5) !!GERMINATION
             seed_bank(ri) = seed_bank(ri) - germinated_seeds(ri) !!UPDATE SEEDBANK
-
-            ! Garantindo que o banco de sementes não fique negativo
-            !if (seed_bank_int(ri) .lt. 0.0D0) seed_bank_int(ri) = 0.0D0
          endif
          
+         !Garantindo que o banco de sementes não fique negativo
+         if (seed_bank_int(ri) .lt. 0.0D0)then 
+            seed_bank(ri) = 0.0D0
+         endif
+
          !! ANNUAL SEEDBANK DECAY
          !if (n_days .eq. 365) then
 
