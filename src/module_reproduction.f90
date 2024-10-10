@@ -51,7 +51,7 @@ contains
             npp_after = nppa - npp_rep !remaining npp
         else
             n_seed = 0.0
-            nppa = npp_after
+            !nppa = npp_after
         endif
 
        
