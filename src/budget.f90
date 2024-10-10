@@ -403,7 +403,7 @@ contains
          endif
          
          !Garantindo que o banco de sementes não fique negativo
-         if (seed_bank_int(ri) .lt. 0.0D0)then 
+         if (seed_bank(ri) .lt. 0.0D0)then 
             seed_bank(ri) = 0.0D0
          endif
 
