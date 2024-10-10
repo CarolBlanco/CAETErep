@@ -10,12 +10,12 @@ contains
 
         ! Declaração das variáveis de entrada
         real(r_8), intent(in) :: height1
-        real(r_4), intent(in) :: nppa
+        real(r_8), intent(in) :: nppa
         !real(r_8), intent(in) :: seed_bank  
 
 
         ! Declaração das variáveis de saída
-        real(i_4), intent(out) :: n_seed 
+        real(r_8), intent(out) :: n_seed 
         real(r_8), intent(out) :: npp_after 
         !real(r_8), intent(out) :: seed_mass
         !real(r_8), intent(out) :: seed_bank
