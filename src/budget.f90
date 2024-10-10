@@ -399,7 +399,7 @@ contains
          if (seed_bank(ri)>0 .and. temp .ge. 23.0) then !CAROL
 
             germinated_seeds(ri) = int(seed_bank(ri)*0.5) !!GERMINATION
-            seed_bank(ri) = seed_bank(ri) - germinated_seeds(ri) !!UPDATE SEEDBANK
+            seed_bank(ri) = int(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
          endif
          
          !Garantindo que o banco de sementes não fique negativo
