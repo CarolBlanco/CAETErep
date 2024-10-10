@@ -404,9 +404,10 @@ contains
 
             germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
             seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
-            germinated_seeds(ri) = 0.0D0
+            
          endif
          
+         germinated_seeds(ri) = 0.0D0
          
 
          !! ANNUAL SEEDBANK DECAY
