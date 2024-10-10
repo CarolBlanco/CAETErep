@@ -152,11 +152,11 @@ contains
       real(r_4),dimension(:),allocatable :: cue
       real(r_4),dimension(:),allocatable :: c_def
       
-      integer(i_4),dimension(:),allocatable :: seed_bank   !NEW ***************
-      integer(i_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
-      integer(i_4),dimension(:),allocatable :: n_seed    !NEW ***************
-      integer(i_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
-      integer(i_4),dimension(:),allocatable :: remaining_npp   !NEW ***************
+      real(i_4),dimension(:),allocatable :: seed_bank   !NEW ***************
+      real(i_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
+      real(i_4),dimension(:),allocatable :: n_seed    !NEW ***************
+      real(i_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
+      real(i_4),dimension(:),allocatable :: remaining_npp   !NEW ***************
 
       real(r_8),dimension(:),allocatable :: cl1_int
       real(r_8),dimension(:),allocatable :: cf1_int
