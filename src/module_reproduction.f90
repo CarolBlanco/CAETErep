@@ -2,10 +2,10 @@ module reproduction
     implicit none
     private
     public :: repro
-    
+
 contains
 
-    subroutine repro(nppa, height1, seed_mass, n_seed) ! seed_bank, new_seed_bank)
+    subroutine repro(nppa, height1, n_seed, npp_after) ! seed_bank, new_seed_bank)
         use global_par
 
         ! Declaração das variáveis de entrada
@@ -16,7 +16,8 @@ contains
 
         ! Declaração das variáveis de saída
         integer(i_4), intent(out) :: n_seed 
-        real(r_8), intent(out) :: seed_mass
+        real(r_8), intent(out) :: npp_after 
+        !real(r_8), intent(out) :: seed_mass
         !real(r_8), intent(out) :: seed_bank
         !real(r_8), intent(out) :: new_seed_bank
 
@@ -24,11 +25,14 @@ contains
         real(r_8) :: height
         real(r_8) :: npp_rep
         real(r_8) :: seed_mass_log
+        real(r_8) :: seed_mass
         !real(r_8) :: seed_mass_one
 
         ! Calculando a massa da semente
         height = height1  ! Altura da planta em metros
         npp_rep = nppa * 0.04  ! 4% do NPP disponível para reprodução
+        npp_after = nppa - npp_rep !remaining npp
+
         print *, "valor de npp_rep:", npp_rep
         print *, "valor de nppa", nppa
 

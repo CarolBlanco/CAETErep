@@ -206,7 +206,7 @@ def catch_out_budget(out):
            "laiavg", "rcavg", "f5avg", "rmavg", "rgavg", "cleafavg_pft", "cawoodavg_pft",
            "cfrootavg_pft", "stodbg", "ocpavg", "wueavg", "cueavg", "c_defavg", "vcmax",
            "specific_la", "nupt", "pupt", "litter_l", "cwd", "litter_fr", "npp2pay", "lnc", "delta_cveg",
-           "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm', "seed_bank_int"]
+           "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
 
     return dict(zip(lst, out))
 
@@ -959,10 +959,10 @@ class grd:
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                         self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
+                                         self.soil_temp, temp[step], prec[step], p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                          ton, top, self.sp_organic_p, self.sp_csoil, co2, sto, cleaf, cwood, croot,
-                                         dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank)
+                                         dcl, dca, dcf, uptk_costs, self.wmax_mm)
 
                 # del sto, cleaf, cwood, croot, dcl, dca, dcf, uptk_costs
                 # Create a dict with the function output
@@ -1353,11 +1353,11 @@ class grd:
             self.soil_temp = st.soil_temp(self.soil_temp, temp[step])
 
             out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                     self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
+                                     self.soil_temp, temp[step], prec[step], p_atm[step],
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
                                      co2, sto, cleaf, cwood, croot,
-                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank)
+                                     dcl, dca, dcf, uptk_costs, self.wmax_mm)
 
             # Create a dict with the function output
             daily_output = catch_out_budget(out)
