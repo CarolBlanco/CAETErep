@@ -375,6 +375,13 @@ contains
          !==============================================================================================================================
 
          !if (24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0 .and. nppa(p) .gt. 0.0) then
+         !Garantindo que o banco de sementes não fique negativo
+         if (seed_bank(ri) .le. 0.0D0)then 
+            seed_bank(ri) = 0.0D0
+         endif
+
+         germinated_seeds(ri) = 0.0D0
+         
          if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
 
             call repro(nppa(p), height_aux(ri), n_seed(ri), remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
@@ -392,11 +399,6 @@ contains
            endif
             print *, "Tamanho do banco de sementes após a produção_na_budget:", seed_bank(ri)
 
-         endif
-
-         !Garantindo que o banco de sementes não fique negativo
-         if (seed_bank(ri) .le. 0.0D0)then 
-            seed_bank(ri) = 0.0D0
          endif
          
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
