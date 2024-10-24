@@ -382,9 +382,11 @@ contains
         ! endif
 
          !germinated_seeds(ri) = 0.0D0
-         print *, "Tamanho do banco de sementes antes da produção_na_budget:", seed_bank(ri)
+         
 
          if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
+
+            print *, "Tamanho do banco de sementes do PLS n.", p, " antes da produção_na_budget:", seed_bank(ri)
 
             call repro(nppa(p), height_aux(ri), n_seed(ri), remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
@@ -413,7 +415,7 @@ contains
             seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes após a germinação:", seed_bank(ri)
 
-            germinated_seeds(ri) = 0.0D0
+            !germinated_seeds(ri) = 0.0D0
 
          endif
          
