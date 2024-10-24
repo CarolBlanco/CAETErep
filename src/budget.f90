@@ -382,7 +382,7 @@ contains
         ! endif
 
          !germinated_seeds(ri) = 0.0D0
-      print *, "Tamanho do banco de sementes antes da produção_na_budget:", seed_bank(ri), "--> Seed_bank do PLS n.", p
+         print *, "Tamanho do banco de sementes antes da produção_na_budget:", seed_bank(ri)
 
          if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
 
@@ -410,7 +410,7 @@ contains
             germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(ri)
 
-            seed_bank(ri) = seed_bank(ri) - germinated_seeds(ri) !!UPDATE SEEDBANK
+            seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes após a germinação:", seed_bank(ri)
 
             germinated_seeds(ri) = 0.0D0
@@ -425,7 +425,7 @@ contains
 
          !! DAILY SEEDBANK DECAY
          seed_bank(ri) = nint(seed_bank - (seed_bank(ri)*0.5))
-         print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
+         print *, "Tamanho do banco de sementes após a decaimento:", seed_bank(ri)
 
              ! Garantir que seed_bank não se torne negativo após o decay
             !if (seed_bank(ri) < 0) then
