@@ -384,12 +384,12 @@ contains
          !germinated_seeds(ri) = 0.0D0
          
 
-         if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
-
+         !if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
+         if (prec .ge. 60.0) then
             call repro(nppa(p), height_aux(ri), n_seed(ri), remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
             !seed_bank(ri) = new_seed_bank(ri)
-            print *, "Tamanho do banco de sementes do PLS n.", p, " antes da nova produção_na_budget:", seed_bank(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank(ri)
 
             nppa(p) = remaining_npp(p)
 
@@ -398,7 +398,7 @@ contains
             seed_bank_new(ri) = nint(seed_bank(ri) + n_seed(ri))
             seed_bank(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
             !else
-            print *, "Tamanho do banco de sementes do PLS n.", p , " após a nova produção_na_budget:", seed_bank(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank(ri)
             !endif
             
 
@@ -408,10 +408,10 @@ contains
          if (seed_bank(ri) .gt. 0 .and. temp .ge. 23.0) then !CAROL
 
             germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
-            print *, "***** Germinaram:", germinated_seeds(ri), " sementes do PLS ", p
+            print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p
 
             seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
-            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a germinação:", seed_bank(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank(ri)
 
             !germinated_seeds(ri) = 0.0D0
 
