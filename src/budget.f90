@@ -408,10 +408,10 @@ contains
          if (seed_bank(ri) .gt. 0 .and. temp .ge. 23.0) then !CAROL
 
             germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
-            print *, "***** Germinaram:", germinated_seeds(ri), " sementes do PLS n. *******", p
+            print *, "***** Germinaram:", germinated_seeds(ri)
 
             seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
-            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a germinação:", seed_bank(ri)
+            print *, "Tamanho do banco de sementes após a germinação:", seed_bank(ri)
 
             germinated_seeds(ri) = 0.0D0
 
