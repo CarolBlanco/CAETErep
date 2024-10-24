@@ -382,7 +382,7 @@ contains
         ! endif
 
          !germinated_seeds(ri) = 0.0D0
-      print *, "Tamanho do banco de sementes antes da produção_na_budget:", seed_bank(ri), "--> Seed_bank do PLS n.", p, "de", nlen
+      print *, "Tamanho do banco de sementes antes da produção_na_budget:", seed_bank(ri), "--> Seed_bank do PLS n.", p
 
          if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
 
