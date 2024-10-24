@@ -424,7 +424,7 @@ contains
          !if (n_days .eq. 365) then
 
          !! DAILY SEEDBANK DECAY
-         seed_bank(ri) = nint(seed_bank - (seed_bank(ri)*0.5))
+         seed_bank(ri) = nint(seed_bank(ri) - (seed_bank(ri)*0.5))
          print *, "Tamanho do banco de sementes após a decaimento:", seed_bank(ri)
 
              ! Garantir que seed_bank não se torne negativo após o decay
