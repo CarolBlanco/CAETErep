@@ -53,6 +53,7 @@ contains
         else
             n_seed = 0.0
             !nppa = npp_after
+            print *, "*******PLS não tem altura suficiente para produzir sementes *******"
         endif
 
        
