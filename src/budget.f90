@@ -389,17 +389,17 @@ contains
             call repro(nppa(p), height_aux(ri), n_seed(ri), remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
             !seed_bank(ri) = new_seed_bank(ri)
-            print *, "Tamanho do banco de sementes do PLS n.", p, " antes da produção_na_budget:", seed_bank(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, " antes da nova produção_na_budget:", seed_bank(ri)
 
             nppa(p) = remaining_npp(p)
 
             !seed_bank(ri) = new_seed_bank(ri) !!!!!!!!!!! COLOQUEI P ATUALIZAR O BANCO APENAS NA BUDGET
-            if (n_seed(ri) .gt. 1) then
-               seed_bank_new(ri) = nint(seed_bank(ri) + n_seed(ri))
-               seed_bank(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
+            !if (n_seed(ri) .gt. 0) then
+            seed_bank_new(ri) = nint(seed_bank(ri) + n_seed(ri))
+            seed_bank(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
             !else
-               print *, "Tamanho do banco de sementes do PLS n.", p , " após a produção_na_budget:", seed_bank(ri)
-            endif
+            print *, "Tamanho do banco de sementes do PLS n.", p , " após a nova produção_na_budget:", seed_bank(ri)
+            !endif
             
 
          endif
@@ -411,7 +411,7 @@ contains
             print *, "***** Germinaram:", germinated_seeds(ri), " sementes do PLS ", p
 
             seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
-            print *, "Tamanho do banco de sementes após a germinação:", seed_bank(ri)
+            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a germinação:", seed_bank(ri)
 
             !germinated_seeds(ri) = 0.0D0
 
@@ -425,7 +425,7 @@ contains
 
          !! DAILY SEEDBANK DECAY
          seed_bank(ri) = nint(seed_bank(ri) - (seed_bank(ri)*0.5))
-         print *, "Tamanho do banco de sementes após a decaimento:", seed_bank(ri)
+         print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
 
              ! Garantir que seed_bank não se torne negativo após o decay
             !if (seed_bank(ri) < 0) then
