@@ -377,7 +377,7 @@ contains
          !if (24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0 .and. nppa(p) .gt. 0.0) then
          !Garantindo que o banco de sementes não fique negativo
         ! if (seed_bank(ri) .le. 0.0D0)then
-      1 !  print *, "**** SEED BANK ERA NEGATIVO E FOI ZERADO *********** " 
+        !  print *, "**** SEED BANK ERA NEGATIVO E FOI ZERADO *********** " 
         !    seed_bank(ri) = 0.0D0
         ! endif
 
