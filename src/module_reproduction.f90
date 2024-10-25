@@ -19,7 +19,7 @@ contains
         ! Declaração das variáveis de saída
         real(r_4), intent(out) :: n_seed 
         !real(r_4), intent(out) :: npp_after 
-        !real(r_8), intent(out) :: seed_mass
+        real(r_8), intent(out) :: seed_mass
         !real(r_8), intent(out) :: seed_bank
         !real(r_8), intent(out) :: new_seed_bank
 
@@ -27,7 +27,6 @@ contains
         real(r_8) :: height
         real(r_4) :: npp_rep
         real(r_8) :: seed_mass_log
-        real(r_8) :: seed_mass
         !real(r_8) :: seed_mass_one
 
         ! Calculando a massa da semente

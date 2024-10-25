@@ -113,7 +113,6 @@ contains
       integer(i_4),dimension(2,npls),intent(out) :: uptk_strat_1
       real(r_8),dimension(npls),intent(out) ::  npp2pay_1 ! C costs of N/P uptake
       real(r_8),dimension(4),intent(out) :: cp ! Aux cp(1:3) CVEG C POOLS cp(4) Auxiliary to HR
-      !real(r_8),dimension(:),allocatable :: total_seed_mass    !NEW ***************
       real(r_8),intent(out) :: c_cost_cwm
       
       !     -----------------------Internal Variables------------------------
@@ -386,7 +385,7 @@ contains
          !germinated_seeds(ri) = 0.0D0
          
 
-         if (nppa(p) .gt. 0 .and. prec .gt. 60.0) then !!CAROL
+         if (nppa(p) .gt. 0) then ! .and. prec .gt. 60.0) then !!CAROL
          !if (prec .gt. 60.0) then
             
             call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
