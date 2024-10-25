@@ -387,6 +387,10 @@ contains
 
          !germinated_seeds(ri) = 0.0D0
          
+         if (n_days .eq. 0 .and. seed_bank(ri) .NE. 0) then
+            seed_bank(ri) = 0.0D0
+         endif
+         
          print *, "NPP do PLS", p, ":", nppa(p)
 
          if (nppa(p) .gt. 0) then ! .and. prec .gt. 60.0) then !!CAROL
@@ -412,6 +416,10 @@ contains
 
          endif
          
+         if (seed_bank(ri) .lt. 0) then
+            seed_bank(ri) = 0
+         endif
+
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
          if (seed_bank(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
 
