@@ -5,8 +5,10 @@ module reproduction
 
 contains
 
-    subroutine repro(nppa, height1, n_seed, npp_after) ! seed_bank, new_seed_bank)
+    subroutine repro(nppa, height1, n_seed)!, npp_after) ! seed_bank, new_seed_bank)
         use global_par
+        use productivity
+        use budget
 
         ! Declaração das variáveis de entrada
         real(r_8), intent(in) :: height1
@@ -16,7 +18,7 @@ contains
 
         ! Declaração das variáveis de saída
         real(r_4), intent(out) :: n_seed 
-        real(r_4), intent(out) :: npp_after 
+        !real(r_4), intent(out) :: npp_after 
         !real(r_8), intent(out) :: seed_mass
         !real(r_8), intent(out) :: seed_bank
         !real(r_8), intent(out) :: new_seed_bank
@@ -49,7 +51,7 @@ contains
             n_seed = nint(npp_rep / seed_mass)
 
             print *, "---------- n_seed:----------", n_seed
-            npp_after = nppa - npp_rep !remaining npp
+            !npp_after = nppa - npp_rep !remaining npp
         else
             n_seed = 0.0
             !nppa = npp_after
