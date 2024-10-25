@@ -47,12 +47,12 @@ contains
 
             npp_rep = nppa * 0.04  ! 4% do NPP disponível para reprodução
              ! Calculando o número de sementes produzidas
-            n_seed = nint(npp_rep / seed_mass)
+            n_seed = int(npp_rep / seed_mass)
 
             !print *, "---------- n_seed:----------", n_seed
             !npp_after = nppa - npp_rep !remaining npp
         else
-            n_seed = 0.0
+            n_seed = 0.0D0
             !nppa = npp_after
             print *, "*******PLS não tem altura suficiente para produzir sementes *******"
         endif

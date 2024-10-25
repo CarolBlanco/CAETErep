@@ -405,7 +405,7 @@ contains
 
             !seed_bank(ri) = new_seed_bank(ri) !!!!!!!!!!! COLOQUEI P ATUALIZAR O BANCO APENAS NA BUDGET
             !if (n_seed(ri) .gt. 0) then
-            seed_bank_new(ri) = nint(seed_bank(ri) + n_seed(ri))
+            seed_bank_new(ri) = int(seed_bank(ri) + n_seed(ri))
             seed_bank(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
             !else
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank(ri)
@@ -423,10 +423,10 @@ contains
 
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank(ri)
 
-            germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
+            germinated_seeds(ri) = int(seed_bank(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p, "dia", n_days
 
-            seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
+            seed_bank(ri) = int(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank(ri)
 
             if (seed_bank(ri) .lt. 0) then
@@ -446,7 +446,7 @@ contains
 
          !! ANNUAL SEEDBANK DECAY
          if (n_days .eq. 365) then
-            decayed_seed_bank(ri) = nint(seed_bank(ri)*0.25)
+            decayed_seed_bank(ri) = int(seed_bank(ri)*0.25)
             seed_bank(ri) = decayed_seed_bank(ri)
 
             print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
