@@ -387,7 +387,7 @@ contains
 
          !germinated_seeds(ri) = 0.0D0
          
-         !print *, "NPP do PLS", p, ":", nppa(p)
+         print *, "NPP do PLS", p, ":", nppa(p)
 
          if (nppa(p) .gt. 0) then ! .and. prec .gt. 60.0) then !!CAROL
    
