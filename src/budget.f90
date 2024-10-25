@@ -415,13 +415,17 @@ contains
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
          if (seed_bank(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
 
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank(ri)
+
             germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p
 
             seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank(ri)
 
-            !germinated_seeds(ri) = 0.0D0
+            if (seed_bank(ri) .lt. 0) then
+               seed_bank(ri) = 0
+            endif
 
          endif
          
