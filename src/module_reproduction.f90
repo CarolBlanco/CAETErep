@@ -8,7 +8,7 @@ contains
     subroutine repro(nppa, height1, n_seed)!, npp_after) ! seed_bank, new_seed_bank)
         use global_par
         use productivity
-        use budget
+    
 
         ! Declaração das variáveis de entrada
         real(r_8), intent(in) :: height1
