@@ -26,7 +26,7 @@ module budget
 
 contains
 
-   subroutine daily_budget(dt, w1, w2, ts, temp, prec, p0, ipar, rh&
+   subroutine daily_budget(dt, w1, w2, ts, temp, prec, n_days, p0, ipar, rh&
         &, mineral_n, labile_p, on, sop, op, csoil,catm, sto_budg_in, cl1_in, ca1_in, cf1_in, nleaf_in, nwood_in&
         &, nroot_in, uptk_costs_in, wmax_in, evavg, epavg, phavg, aravg, nppavg&
         &, laiavg, rcavg, f5avg, rmavg, rgavg, cleafavg_pft, cawoodavg_pft&
@@ -55,6 +55,7 @@ contains
       real(r_4),intent(in) :: temp                 ! Surface air temperature (oC)
 
       real(r_4),intent(in) :: prec                   ! Precipitation (mm/day) !NEW ***************
+      real(r_4),intent(in) :: n_days                 ! Day of year !NEW ***************
 
       real(r_4),intent(in) :: p0                   ! Surface pressure (mb)
       real(r_4),intent(in) :: ipar                 ! Incident photosynthetic active radiation mol Photons m-2 s-1
@@ -154,6 +155,7 @@ contains
       real(r_8),dimension(:),allocatable :: seed_mass    !NEW ***************
       real(r_4),dimension(:),allocatable :: seed_bank   !NEW ***************
       real(r_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
+      real(r_4),dimension(:),allocatable :: decayed_seed_bank   !NEW ***************
       real(r_4),dimension(:),allocatable :: n_seed    !NEW ***************
       real(r_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
       real(r_4),dimension(:),allocatable :: remaining_npp   !NEW ***************
@@ -317,6 +319,7 @@ contains
       allocate(seed_mass(nlen)) !NEW ***************
       allocate(seed_bank(nlen)) !NEW ***************
       allocate(seed_bank_new(nlen))
+      allocate(decayed_seed_bank(nlen))
       allocate(n_seed(nlen)) !NEW ***************
       allocate(germinated_seeds(nlen)) !NEW ***************
       allocate(remaining_npp(nlen))!NEW ***************
@@ -384,7 +387,7 @@ contains
 
          !germinated_seeds(ri) = 0.0D0
          
-         print *, "NPP do PLS", p, ":", nppa(p)
+         !print *, "NPP do PLS", p, ":", nppa(p)
 
          if (nppa(p) .gt. 0) then ! .and. prec .gt. 60.0) then !!CAROL
    
@@ -393,7 +396,8 @@ contains
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
             !seed_bank(ri) = new_seed_bank(ri)
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank(ri)
-
+            print *, "Altura do PLS", p, "-->", height_aux(ri)
+            print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(ri)
             !nppa(p) = remaining_npp(p)
 
             !seed_bank(ri) = new_seed_bank(ri) !!!!!!!!!!! COLOQUEI P ATUALIZAR O BANCO APENAS NA BUDGET
@@ -408,7 +412,7 @@ contains
          endif
          
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seed_bank(ri) .gt. 0 .and. temp .ge. 23.0) then !CAROL
+         if (seed_bank(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
 
             germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p
@@ -422,14 +426,21 @@ contains
          
          !germinated_seeds(ri) = 0.0D0
          
+         !! DAILY SEEDBANK DECAY
+         !seed_bank(ri) = nint(seed_bank(ri) - (seed_bank(ri)*0.5))
+         !decayed_seed_bank(ri) = nint(seed_bank(ri)*0.25)
+         !seed_bank(ri) = decayed_seed_bank(ri)
+
+         !print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
 
          !! ANNUAL SEEDBANK DECAY
-         !if (n_days .eq. 365) then
+         if (n_days .eq. 365) then
+            decayed_seed_bank(ri) = nint(seed_bank(ri)*0.25)
+            seed_bank(ri) = decayed_seed_bank(ri)
 
-         !! DAILY SEEDBANK DECAY
-         seed_bank(ri) = nint(seed_bank(ri) - (seed_bank(ri)*0.5))
-         print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
-
+            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
+         endif
+         
              ! Garantir que seed_bank não se torne negativo após o decay
             !if (seed_bank(ri) < 0) then
             !   seed_bank(ri) = 0
@@ -740,7 +751,8 @@ contains
       deallocate(crown_int)
       deallocate(co2_abs_se)
       deallocate(seed_bank) !NEW ***************
-      deallocate(seed_bank_new)
+      deallocate(seed_bank_new) !NEW ***************
+      deallocate(decayed_seed_bank)
       deallocate(n_seed) !NEW ***************
       deallocate(germinated_seeds) !NEW ***************
       deallocate(remaining_npp) !NEW ***************

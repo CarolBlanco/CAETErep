@@ -43,13 +43,13 @@ contains
             !print *, "seed_mass_log", seed_mass_log
             ! Converte a massa da semente de escala logarítmica para normal (linear)
             seed_mass = ((10.0 ** seed_mass_log) / 1.0D6)
-            print *, "Altura da planta:", height, "m, Massa da semente:", seed_mass, "kg"
+            !print *, "Altura da planta:", height, "m, Massa da semente:", seed_mass, "kg"
 
             npp_rep = nppa * 0.04  ! 4% do NPP disponível para reprodução
              ! Calculando o número de sementes produzidas
             n_seed = nint(npp_rep / seed_mass)
 
-            print *, "---------- n_seed:----------", n_seed
+            !print *, "---------- n_seed:----------", n_seed
             !npp_after = nppa - npp_rep !remaining npp
         else
             n_seed = 0.0
