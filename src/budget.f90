@@ -387,10 +387,8 @@ contains
 
          !germinated_seeds(ri) = 0.0D0
          
-         if (n_days .eq. 0 .and. seed_bank(ri) .NE. 0) then
-            seed_bank(ri) = 0.0D0
-         endif
          
+
          print *, "NPP do PLS", p, ":", nppa(p)
 
          if (nppa(p) .gt. 0) then ! .and. prec .gt. 60.0) then !!CAROL
@@ -416,8 +414,8 @@ contains
 
          endif
          
-         if (seed_bank(ri) .lt. 0) then
-            seed_bank(ri) = 0
+         if (n_days .eq. 0 .and. seed_bank(ri) .NE. 0) then !avoid allocating random initial numbers to seed bank
+            seed_bank(ri) = 0.0D0
          endif
 
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
@@ -426,7 +424,7 @@ contains
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank(ri)
 
             germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
-            print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p
+            print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p, "dia", n_days
 
             seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank(ri)
