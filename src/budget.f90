@@ -386,12 +386,12 @@ contains
 
          !if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
          if (prec .ge. 60.0) then
-            call repro(nppa(p), height_aux(ri), n_seed(ri), remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
+            call repro(nppa(p), height_aux(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
             !seed_bank(ri) = new_seed_bank(ri)
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank(ri)
 
-            nppa(p) = remaining_npp(p)
+            !nppa(p) = remaining_npp(p)
 
             !seed_bank(ri) = new_seed_bank(ri) !!!!!!!!!!! COLOQUEI P ATUALIZAR O BANCO APENAS NA BUDGET
             !if (n_seed(ri) .gt. 0) then
