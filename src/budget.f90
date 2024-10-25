@@ -32,8 +32,7 @@ contains
         &, laiavg, rcavg, f5avg, rmavg, rgavg, cleafavg_pft, cawoodavg_pft&
         &, cfrootavg_pft, storage_out_bdgt_1, ocpavg, wueavg, cueavg, c_defavg&
         &, vcmax_1, specific_la_1, nupt_1, pupt_1, litter_l_1, cwd_1, litter_fr_1, npp2pay_1, lit_nut_content_1&
-        &, delta_cveg_1,co2_abs_se_1, limitation_status_1, uptk_strat_1, cp, c_cost_cwm)
-
+        &, delta_cveg_1,co2_abs_se_1, limitation_status_1, uptk_strat_1, cp, c_cost_cwm, seed_bank_int, seed_bank_in, sb)
 
       use types
       use global_par, only: ntraits, npls
@@ -55,6 +54,7 @@ contains
       real(r_4),intent(in) :: temp                 ! Surface air temperature (oC)
 
       real(r_4),intent(in) :: prec                   ! Precipitation (mm/day) !NEW ***************
+      !real(r_4),intent(in) :: n_days                 ! day of year !NEW ***************
 
       real(r_4),intent(in) :: p0                   ! Surface pressure (mb)
       real(r_4),intent(in) :: ipar                 ! Incident photosynthetic active radiation mol Photons m-2 s-1
@@ -74,7 +74,7 @@ contains
       real(r_8),dimension(npls),intent(in) :: nroot_in  ! k gm-2
       real(r_8),dimension(npls),intent(in) :: nwood_in  ! k gm-2
       real(r_8),dimension(npls),intent(in) :: uptk_costs_in ! g m-2
-      !real(r_8),dimension(npls),intent(in) :: seed_bank_in  ! initial seed_bank NEW
+      real(r_8),dimension(npls),intent(in) :: seed_bank_in  ! initial seed_bank NEW
 
 
 
@@ -113,6 +113,9 @@ contains
       integer(i_4),dimension(2,npls),intent(out) :: uptk_strat_1
       real(r_8),dimension(npls),intent(out) ::  npp2pay_1 ! C costs of N/P uptake
       real(r_8),dimension(4),intent(out) :: cp ! Aux cp(1:3) CVEG C POOLS cp(4) Auxiliary to HR
+      integer(r_8), dimension(npls), intent(out) :: seed_bank_int !NEWW
+      integer(r_8), dimension(npls), intent(out) :: sb !NEWW
+
       !real(r_8),dimension(:),allocatable :: total_seed_mass    !NEW ***************
       real(r_8),intent(out) :: c_cost_cwm
       
@@ -129,7 +132,7 @@ contains
       real(r_4),parameter :: tsnow = -1.0
       real(r_4),parameter :: tice  = -2.5
 
-      real(r_8),dimension(npls) :: cl1_pft, cf1_pft, ca1_pft!, seed_bank_pft !new seed_bank
+      real(r_8),dimension(npls) :: cl1_pft, cf1_pft, ca1_pft, seed_bank_pft !NEWWW
       real(r_4) :: soil_temp
       real(r_4) :: emax
       real(r_8) :: w                               !Daily soil moisture storage (mm)
@@ -152,11 +155,14 @@ contains
       real(r_4),dimension(:),allocatable :: cue
       real(r_4),dimension(:),allocatable :: c_def
       
-      real(r_4),dimension(:),allocatable :: seed_bank   !NEW ***************
-      real(r_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
-      real(r_4),dimension(:),allocatable :: n_seed    !NEW ***************
-      real(r_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
-      real(r_4),dimension(:),allocatable :: remaining_npp   !NEW ***************
+      real(r_8),dimension(:),allocatable :: seed_mass    !NEW ***************
+      !integer(i_4),dimension(:),allocatable :: seed_bank   !NEW ***************
+      integer(i_4),dimension(:),allocatable :: n_seed    !NEW ***************
+      integer(i_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
+      real(r_8),dimension(:),allocatable :: total_C_pls    !NEW *************** BIOMASSA DAS GERMINADAS
+      real(r_8),dimension(:),allocatable :: pct_leaf_C    !NEW *************** BIOMASSA DAS GERMINADAS
+      real(r_8),dimension(:),allocatable :: pct_wood_C    !NEW *************** BIOMASSA DAS GERMINADAS
+      real(r_8),dimension(:),allocatable :: pct_froot_C    !NEW *************** BIOMASSA DAS GERMINADAS
 
       real(r_8),dimension(:),allocatable :: cl1_int
       real(r_8),dimension(:),allocatable :: cf1_int
@@ -183,6 +189,7 @@ contains
       INTEGER(i_4), dimension(:), allocatable :: lp ! index of living PLSs/living grasses
       real(r_8),dimension(:), allocatable :: height_int
       real(r_8),dimension(:), allocatable :: crown_int
+      integer(i_4),dimension(:),allocatable :: int_seed_bank !newWWW
       real(r_8),dimension(:), allocatable :: co2_abs_se
       ! real(r_8),dimension(:), allocatable :: fpc_grid_int
 
@@ -207,14 +214,15 @@ contains
          pdia_aux(i) = dt(17,i)
          dwood_aux(i) = dt(18,i)
          sla_aux(i) = dt(19,i)
-         cl1_pft(i) = cl1_in(i)
+         cl1_pft(i) = cl1_in(i) !!!!!!duas variáveis iguais???? cl1_in e cl1_pft
          ca1_pft(i) = ca1_in(i)
          cf1_pft(i) = cf1_in(i)
          nleaf(i) = nleaf_in(i)
          nwood(i) = nwood_in(i)
          nroot(i) = nroot_in(i)
          uptk_costs(i) = uptk_costs_in(i)
-
+         seed_bank_pft(i) = seed_bank_in(i) !!NEW
+         !print*, "seed_bank_pft", seed_bank_pft(i)
          do j = 1,3
             sto_budg(j,i) = sto_budg_in(j,i)
          enddo
@@ -311,15 +319,19 @@ contains
       allocate(day_storage(3,nlen))
       allocate(height_int(nlen))
       allocate(crown_int(nlen))
+      allocate(int_seed_bank(nlen)) !new
+      !print*, "int_seed_banl ANTES", int_seed_bank(nlen)!!new
       allocate(co2_abs_se(nlen))
 
-      !allocate(total_seed_mass(nlen)) !NEW ***************
-      allocate(seed_bank(nlen)) !NEW ***************
-      allocate(seed_bank_new(nlen))
+      allocate(seed_mass(nlen)) !NEW ***************
+      !allocate(seed_bank_int(nlen)) !NEW ***************
+      !allocate(new_seed_bank(nlen))
       allocate(n_seed(nlen)) !NEW ***************
       allocate(germinated_seeds(nlen)) !NEW ***************
-      allocate(remaining_npp(nlen))!NEW ***************
-      
+      allocate(total_C_pls(nlen)) !NEW ***************
+      allocate(pct_leaf_C(nlen)) !NEW ***************
+      allocate(pct_wood_C(nlen)) !NEW ***************
+      allocate(pct_froot_C(nlen)) !NEW ***************
 
       !     Maximum evapotranspiration   (emax)
       !     =================================
@@ -373,69 +385,58 @@ contains
          !   REPRODUCTION OF TREES [call SEED PRODUCTION MODULE; SEED GERMINATION; UPDATE BIOMASS POOLS; UPDATE SEEDBAK]
          !   (Bruna R. Soica)
          !==============================================================================================================================
-
-         !if (24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0 .and. nppa(p) .gt. 0.0) then
          !Garantindo que o banco de sementes não fique negativo
-        ! if (seed_bank(ri) .le. 0.0D0)then
-        !  print *, "**** SEED BANK ERA NEGATIVO E FOI ZERADO *********** " 
-        !    seed_bank(ri) = 0.0D0
-        ! endif
 
-         !germinated_seeds(ri) = 0.0D0
-         
+         !if (seed_bank_int(ri) .le. 0.0D0)then 
+         !   seed_bank_int(ri) = 0.0D0
+         !endif
 
-         !if (nppa(p) .gt. 0 .and. prec .ge. 60.0) then !!CAROL
-         if (prec .ge. 60.0) then
+         !print *, "Tamanho do banco de sementes antes da produção_na_budget:", seed_bank_int(ri)
+
+         !germinated_seeds(ri) = 0.0D0 !!ARREDONDAR P ZERO SE FOR MENOR?
+
+         if (23.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0 .and. nppa(p) .gt. 0.0) then
             
-            call repro(nppa(p), height_aux(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
-            !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
-            !seed_bank(ri) = new_seed_bank(ri)
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank(ri)
-
-            !nppa(p) = remaining_npp(p)
-
-            !seed_bank(ri) = new_seed_bank(ri) !!!!!!!!!!! COLOQUEI P ATUALIZAR O BANCO APENAS NA BUDGET
-            !if (n_seed(ri) .gt. 0) then
-            seed_bank_new(ri) = nint(seed_bank(ri) + n_seed(ri))
-            seed_bank(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
-            !else
-            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank(ri)
-            !endif
-            
-
-         endif
+            call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
          
-         !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seed_bank(ri) .gt. 0 .and. temp .ge. 23.0) then !CAROL
-
-            germinated_seeds(ri) = nint(seed_bank(ri)*0.5) !!GERMINATION
-            print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p
-
-            seed_bank(ri) = nint(seed_bank(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
-            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank(ri)
-
-            !germinated_seeds(ri) = 0.0D0
-
-         endif
+            print *, "Tamanho do banco de sementes antes da produção_na_budget:", seed_bank_int(ri)
          
-         !germinated_seeds(ri) = 0.0D0
+            ! Atualiza o int_seed_bank com base na produção de sementes
+            if (n_seed(ri) .gt. 0) then
+               int_seed_bank(ri) = int(seed_bank_int(ri)) + n_seed(ri)
+            else
+               int_seed_bank(ri) = int(seed_bank_int(ri))  ! Não altera se não houver produção
+            endif
          
-
-         !! ANNUAL SEEDBANK DECAY
-         !if (n_days .eq. 365) then
-
-         !! DAILY SEEDBANK DECAY
-         seed_bank(ri) = nint(seed_bank(ri) - (seed_bank(ri)*0.5))
-         print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
-
-             ! Garantir que seed_bank não se torne negativo após o decay
-            !if (seed_bank(ri) < 0) then
-            !   seed_bank(ri) = 0
-            !endif
-
-            !print *, "seed_bank após decay", seed_bank(ri)
-
-
+            print *, "Tamanho do banco de sementes após a produção_na_budget:", int_seed_bank(ri)
+         
+            ! Nova condição para calcular germinação de sementes, caso o banco seja maior que 0
+            if (int_seed_bank(ri) .gt. 0) then
+               germinated_seeds(ri) = int(real(int_seed_bank(ri)) * 0.3)  ! Garantir que seja escalar
+               int_seed_bank(ri) = int(int_seed_bank(ri) - germinated_seeds(ri))  ! Subtrai o valor escalar germinated_seeds
+               print *, "Número de sementes germinadas:", germinated_seeds(ri)
+               print *, "Tamanho do banco de sementes após germinação:", int_seed_bank(ri)
+         
+               !!UPDATE PLS C POOLS:
+               total_C_pls(ri) = cl1_pft(ri) + ca1_pft(ri) + cf1_pft(ri)  ! Calcula a biomassa total do PLS antes da germinação 
+               pct_leaf_C(ri) = cl1_pft(ri) / total_C_pls(ri)  ! Calcula %C na pool de folha antes da germinação
+               pct_wood_C(ri) = ca1_pft(ri) / total_C_pls(ri)  ! Calcula %C na pool de madeira antes da germinação 
+               pct_froot_C(ri) = cf1_pft(ri) / total_C_pls(ri)  ! Calcula %C na pool de raiz antes da germinação
+         
+               total_C_pls(ri) = total_C_pls(ri) * real(germinated_seeds(ri))  ! Incrementa a biomassa total do PLS com o número escalar de sementes germinadas
+         
+               cl1_pft(ri) = pct_leaf_C(ri) * total_C_pls(ri)  ! Realoque a nova biomassa do PLS na pool de folha
+               ca1_pft(ri) = pct_wood_C(ri) * total_C_pls(ri)  ! Realoque a nova biomassa do PLS na pool de madeira
+               cf1_pft(ri) = pct_froot_C(ri) * total_C_pls(ri)  ! Realoque a nova biomassa do PLS na pool de raiz
+         
+            endif
+         
+            !! DECAY DO BANCO DE SEMENTES DIÁRIO
+            int_seed_bank(ri) = int(int_seed_bank(ri) * 0.99)
+            print *, "Banco de sementes após decomposição diária:", int_seed_bank(ri)
+         
+         end if
+         
 
          !===================================================================================
          !   END REPRODUCTION 
@@ -595,7 +596,9 @@ contains
       storage_out_bdgt_1(:, :) = 0.0D0
       limitation_status_1(:,:) = 0
       uptk_strat_1(:,:) = 0
-      !seed_bank_out(:) = 0.0D0
+      seed_bank_int(:) = 0.0D0 !newww
+      !print*, "seed_bank_int", seed_bank_int !!new
+
       npp2pay_1(:) = 0.0
       
 
@@ -624,13 +627,17 @@ contains
       cwd_1 = sum(cwd * ocp_coeffs, mask= .not. isnan(cwd))
       litter_fr_1 = sum(litter_fr * ocp_coeffs, mask= .not. isnan(litter_fr))
       c_cost_cwm = sum(npp2pay * ocp_coeffs, mask= .not. isnan(npp2pay))
-      !seed_bank_pls = sum(seed_bank_int * ocp_coeffs, mask= .not. isnan(seed_bank_int))
       co2_abs_se_1 = sum(co2_abs_se * ocp_coeffs, mask= .not. isnan(co2_abs_se))*10
 
       cp(1) = sum(cl1_int * ocp_coeffs, mask= .not. isnan(cl1_int))
       cp(2) = sum(ca1_int * (ocp_coeffs * idx_grasses), mask= .not. isnan(ca1_int))
       cp(3) = sum(cf1_int * ocp_coeffs, mask= .not. isnan(cf1_int))
       cp(4) = sum(ar_fix_hr * (ocp_coeffs * idx_pdia), mask= .not. isnan(ar_fix_hr))
+      !sb = sum(int_seed_bank * ocp_coeffs, mask= .not. isnan(int_seed_bank)) !!NEWwwwwww
+      !sb = sum(real(int_seed_bank, kind = r_8) * ocp_coeffs, mask= .not.isnan(int_seed_bank)) ! NEWWW - PRECISA? MEDIA PONDERADA
+      sb = sum(int_seed_bank * int(ocp_coeffs)) 
+      !print*, "sb", sb !!new
+
 
       !print*, 'CO2_ABS (t/ha)', co2_abs_se_1
 
@@ -691,7 +698,9 @@ contains
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          npp2pay_1(ri) = npp2pay(p)
-         !seed_bank_out(ri)= seed_bank_int(p) !new
+         seed_bank_int(ri)= int(int_seed_bank(p)) !newwww
+         !print*, "seed_bank_int ultimo", seed_bank_int !!new
+
 
       enddo
 
@@ -737,11 +746,13 @@ contains
       deallocate(height_int)
       deallocate(crown_int)
       deallocate(co2_abs_se)
-      deallocate(seed_bank) !NEW ***************
-      deallocate(seed_bank_new)
+      !deallocate(seed_bank_int) !NEWWWWWWWWWWWWWW
+      deallocate(int_seed_bank)
+      !print*, "int_seed_bank ULTIMO", int_seed_bank !!new
+
+      !deallocate(seed_bank) !NEW ***************
       deallocate(n_seed) !NEW ***************
       deallocate(germinated_seeds) !NEW ***************
-      deallocate(remaining_npp) !NEW ***************
 
       
    end subroutine daily_budget
