@@ -152,6 +152,7 @@ contains
       real(r_4),dimension(:),allocatable :: cue
       real(r_4),dimension(:),allocatable :: c_def
       
+      real(r_8),dimension(:),allocatable :: seed_mass    !NEW ***************
       real(r_4),dimension(:),allocatable :: seed_bank   !NEW ***************
       real(r_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
       real(r_4),dimension(:),allocatable :: n_seed    !NEW ***************
@@ -314,6 +315,7 @@ contains
       allocate(co2_abs_se(nlen))
 
       !allocate(total_seed_mass(nlen)) !NEW ***************
+      allocate(seed_mass(nlen)) !NEW ***************
       allocate(seed_bank(nlen)) !NEW ***************
       allocate(seed_bank_new(nlen))
       allocate(n_seed(nlen)) !NEW ***************
@@ -387,7 +389,7 @@ contains
          if (nppa(p) .gt. 0 .and. prec .gt. 60.0) then !!CAROL
          !if (prec .gt. 60.0) then
             
-            call repro(nppa(p), height_aux(ri),seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
+            call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
             !seed_bank(ri) = new_seed_bank(ri)
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank(ri)
