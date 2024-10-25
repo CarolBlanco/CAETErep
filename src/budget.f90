@@ -395,6 +395,7 @@ contains
             call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
             !seed_bank(ri) = new_seed_bank(ri)
+            print *, "****Reprodução dia", n_days
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank(ri)
             print *, "Altura do PLS", p, "-->", height_aux(ri)
             print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(ri)
