@@ -359,7 +359,7 @@ class grd:
         self.lim_status = None
         self.uptake_strategy = None
         self.carbon_costs = None
-        self.seed_bank = None #NEW (reproduction)
+        self.seed_bank = None #NEW (module_reproduction)
 
         # WATER POOLS
         # Water content for each soil layer
@@ -395,7 +395,7 @@ class grd:
         self.vp_wdl = None
         self.vp_sto = None
         self.vp_lsid = None
-        self.vp_seed_bank = None # NEW (reproduction)
+        self.vp_seed_bank = None # NEW (module_reproduction)
 
         # Hydraulics
         self.theta_sat = None
@@ -461,7 +461,7 @@ class grd:
         self.storage_pool = np.zeros(shape=(3, n), order='F')
         self.ls = np.zeros(shape=(n,), order='F')
         self.carbon_costs = np.zeros(shape=(n,), order='F')
-        self.seed_bank = np.zeros(shape=(n,), order='F') ## NEW (reproduction)
+        self.seed_bank = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
 
 
         self.area = np.zeros(shape=(npls, n), order='F')
@@ -531,7 +531,7 @@ class grd:
                      'storage_pool': self.storage_pool,
                      'calendar': self.calendar,    # Calendar name
                      'time_unit': self.time_unit,   # Time unit
-                     'seed_bank': self.seed_bank, #NEW
+                     'seed_bank': self.seed_bank, # !! NEW (module_reproduction)
                      'sind': index[0],
                      'eind': index[1]}
         # Flush attrs
@@ -580,7 +580,7 @@ class grd:
         self.lim_status = None
         self.carbon_costs = None,
         self.uptake_strategy = None,
-        self.seed_bank = None
+        self.seed_bank = None ##!! NEW (module_reproduction)
 
         return to_pickle
 
@@ -702,7 +702,7 @@ class grd:
         self.sp_sorganic_p = self.soil_dict['op'] - self.sp_organic_p
 
        ## NEW (reproduction)
-        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? #NEW
+        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
 
         self.outputs = dict()
         self.filled = True
@@ -1188,7 +1188,7 @@ class grd:
                 # # #  store (np.array) outputs
                 if save:
                     assert self.save == True
-                    self.seed_bank[step] = daily_output['PLS_seed_bank_out']
+                    self.seed_bank[step] = daily_output['PLS_seed_bank_out'] ## !! NEW (module_reproduction)
                     self.carbon_costs[step] = daily_output['c_cost_cwm']
                     self.emaxm.append(daily_output['epavg'])
                     self.tsoil.append(self.soil_temp)
@@ -1326,7 +1326,7 @@ class grd:
         dca = self.vp_dca
         dcf = self.vp_dcf
         uptk_costs = np.zeros(npls, order='F')
-        seed_bank = self.vp_seed_bank ## NEW (reproduction)
+        seed_bank = self.vp_seed_bank ## NEW (module_reproduction)
 
         for step in range(steps.size):
             loop += 1
@@ -1503,7 +1503,7 @@ class plot(grd):
 
         ## Reproduction
 
-        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (reproduction)
+        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (module_reproduction)
 
 
         self.outputs = dict()
