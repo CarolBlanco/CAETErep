@@ -202,11 +202,11 @@ def neighbours_index(pos, matrix):
 
 # WARNING keep the lists of budget/carbon3 outputs updated with fortran code
 def catch_out_budget(out):
-    lst = ["evavg", "epavg", "phavg", "aravg", "nppavg", "PLS_seed_bank_out"
+    lst = ["evavg", "epavg", "phavg", "aravg", "nppavg",
            "laiavg", "rcavg", "f5avg", "rmavg", "rgavg", "cleafavg_pft", "cawoodavg_pft",
            "cfrootavg_pft", "stodbg", "ocpavg", "wueavg", "cueavg", "c_defavg", "vcmax",
            "specific_la", "nupt", "pupt", "litter_l", "cwd", "litter_fr", "npp2pay", "lnc", "delta_cveg",
-           "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
+            "PLS_seed_bank_out", "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
 
     return dict(zip(lst, out))
 
@@ -388,6 +388,7 @@ class grd:
         self.vp_cleaf = None
         self.vp_croot = None
         self.vp_cwood = None
+        self.vp_seed_bank = None # NEW (module_reproduction)
         self.vp_dcl = None
         self.vp_dca = None
         self.vp_dcf = None
@@ -395,8 +396,8 @@ class grd:
         self.vp_wdl = None
         self.vp_sto = None
         self.vp_lsid = None
-        self.vp_seed_bank = None # NEW (module_reproduction)
 
+    
         # Hydraulics
         self.theta_sat = None
         self.psi_sat = None
@@ -674,6 +675,10 @@ class grd:
         self.vp_croot = np.zeros(shape=(npls,), order='F') + 1.0
         self.vp_cwood = np.zeros(shape=(npls,), order='F') + 0.1
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
+
+        ## NEW (reproduction)
+        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
+
         # self.vp_cleaf, self.vp_croot, self.vp_cwood = m.spinup2(
         #     1.0, self.pls_table)
         a, b, c, d = m.pft_area_frac(
@@ -700,9 +705,6 @@ class grd:
         self.sp_sorganic_n = 0.1 * self.soil_dict['tn']
         self.sp_organic_p = 0.5 * self.soil_dict['op']
         self.sp_sorganic_p = self.soil_dict['op'] - self.sp_organic_p
-
-       ## NEW (reproduction)
-        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
 
         self.outputs = dict()
         self.filled = True
@@ -961,8 +963,8 @@ class grd:
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                          self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
-                                         ton, top, self.sp_organic_p, self.sp_csoil, co2, sto, cleaf, cwood, croot,
-                                         dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank)
+                                         ton, top, self.sp_organic_p, self.sp_csoil, seed_bank, co2, sto, cleaf, cwood, croot,
+                                         dcl, dca, dcf, uptk_costs, self.wmax_mm)
 
                 # del sto, cleaf, cwood, croot, dcl, dca, dcf, uptk_costs
                 # Create a dict with the function output
@@ -987,6 +989,9 @@ class grd:
                     for i0, i in enumerate(self.vp_lsid):
                         if awood[i] > 0.0:
                             self.vp_cwood[i0] = 0.1
+
+                    ## !! NEW (module_reproduction)
+                    self.vp_seed_bank = np.zeros(shape=(self.vp_lsid.size,))
 
                     self.vp_dcl = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_dca = np.zeros(shape=(self.vp_lsid.size,))
@@ -1190,7 +1195,6 @@ class grd:
                 # # #  store (np.array) outputs
                 if save:
                     assert self.save == True
-                    self.seed_bank[step] = daily_output['PLS_seed_bank_out'] ## !! NEW (module_reproduction)
                     self.carbon_costs[step] = daily_output['c_cost_cwm']
                     self.emaxm.append(daily_output['epavg'])
                     self.tsoil.append(self.soil_temp)
@@ -1213,6 +1217,7 @@ class grd:
                     self.cleaf[step] = daily_output['cp'][0]
                     self.cawood[step] = daily_output['cp'][1]
                     self.cfroot[step] = daily_output['cp'][2]
+                    self.seed_bank[step] = daily_output['PLS_seed_bank_out'] ## !! NEW (module_reproduction)
                     self.co2_abs[step] = daily_output['co2_abs']
                     self.hresp[step] = soil_out['hr']
                     self.csoil[:, step] = soil_out['cs']
@@ -1328,8 +1333,8 @@ class grd:
         dca = self.vp_dca
         dcf = self.vp_dcf
         uptk_costs = np.zeros(npls, order='F')
-        seed_bank = np.zeros(npls, order='F')
-        #seed_bank = self.vp_seed_bank ## NEW (module_reproduction)
+        #seed_bank = np.zeros(npls, order='F')
+        seed_bank = self.vp_seed_bank ## NEW (module_reproduction)
 
         for step in range(steps.size):
             loop += 1
@@ -1355,8 +1360,8 @@ class grd:
                                      self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
-                                     co2, sto, cleaf, cwood, croot,
-                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank)
+                                     seed_bank, co2, sto, cleaf, cwood, croot,
+                                     dcl, dca, dcf, uptk_costs, self.wmax_mm)
 
             # Create a dict with the function output
             daily_output = catch_out_budget(out)
@@ -1478,6 +1483,9 @@ class plot(grd):
         self.vp_cwood = np.zeros(shape=(npls,), order='F') + 0.1
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
 
+        ## Reproduction
+        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (module_reproduction)
+
         a, b, c, d = m.pft_area_frac(
             self.vp_cleaf, self.vp_croot, self.vp_cwood, self.pls_table[6, :])
         self.vp_lsid = np.where(a > 0.0)[0]
@@ -1503,10 +1511,6 @@ class plot(grd):
         self.sp_sorganic_n = 0.1 * self.soil_dict['tn']
         self.sp_organic_p = 0.5 * self.soil_dict['op']
         self.sp_sorganic_p = self.soil_dict['op'] - self.sp_organic_p
-
-        ## Reproduction
-
-        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (module_reproduction)
 
 
         self.outputs = dict()
