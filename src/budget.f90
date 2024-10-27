@@ -154,7 +154,7 @@ contains
       real(r_4),dimension(:),allocatable :: c_def
       
       real(r_8),dimension(:),allocatable :: seed_mass    !! NEW (module_reproduction)
-      real(r_4),dimension(:),allocatable :: seed_bank_int   !! NEW (module_reproduction)
+      real(r_8),dimension(:),allocatable :: seed_bank_int   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: seed_bank_new   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: decayed_seed_bank  !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: n_seed   !! NEW (module_reproduction)
@@ -387,7 +387,7 @@ contains
             call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             
             print *, "****Reprodução dia", n_days
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int(ri)
             print *, "Altura do PLS", p, "-->", height_aux(ri)
             print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(ri)
             !nppa(p) = remaining_npp(p)
@@ -704,7 +704,7 @@ contains
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          npp2pay_1(ri) = npp2pay(p)
-         PLS_seed_bank_out(ri)= seed_bank(p) !! NEW (module_reproduction)
+         PLS_seed_bank_out(ri)= seed_bank_int(p) !! NEW (module_reproduction)
 
       enddo
 
