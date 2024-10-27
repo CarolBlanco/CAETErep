@@ -206,7 +206,7 @@ def catch_out_budget(out):
            "laiavg", "rcavg", "f5avg", "rmavg", "rgavg", "cleafavg_pft", "cawoodavg_pft",
            "cfrootavg_pft", "stodbg", "ocpavg", "wueavg", "cueavg", "c_defavg", "vcmax",
            "specific_la", "nupt", "pupt", "litter_l", "cwd", "litter_fr", "npp2pay", "lnc", "delta_cveg",
-            "seed_bank_out_1", "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
+            "seed_bank_out_bdgt", "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
 
     return dict(zip(lst, out))
 
@@ -532,7 +532,7 @@ class grd:
                      'storage_pool': self.storage_pool,
                      'calendar': self.calendar,    # Calendar name
                      'time_unit': self.time_unit,   # Time unit
-                     'seed_bank_out_1': self.seed_bank_out, # !! NEW (module_reproduction)
+                     'seed_bank_out': self.seed_bank_out, # !! NEW (module_reproduction)
                      'sind': index[0],
                      'eind': index[1]}
         # Flush attrs
@@ -991,7 +991,7 @@ class grd:
                             self.vp_cwood[i0] = 0.1
 
                     ## !! NEW (module_reproduction)
-                    self.vp_seed_bank_out = np.zeros(shape=(self.vp_lsid.size,))
+                    self.vp_seed_bank_out = np.zeros(shape=(self.vp_lsid.size,)) +1.0
 
                     self.vp_dcl = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_dca = np.zeros(shape=(self.vp_lsid.size,))
@@ -1016,6 +1016,7 @@ class grd:
                     self.vp_dcf = daily_output['delta_cveg'][2][self.vp_lsid]
                     self.vp_sto = daily_output['stodbg'][:, self.vp_lsid]
                     self.sp_uptk_costs = daily_output['npp2pay'][self.vp_lsid]
+                    self.seed_bank_out = daily_output['seed_bank_out_bdgt'][self.vp_lsid]
 
 
                 # UPDATE STATE VARIABLES
@@ -1217,7 +1218,7 @@ class grd:
                     self.cleaf[step] = daily_output['cp'][0]
                     self.cawood[step] = daily_output['cp'][1]
                     self.cfroot[step] = daily_output['cp'][2]
-                    self.seed_bank_out[step] = daily_output['seed_bank_out'] ## !! NEW (module_reproduction)
+                    self.seed_bank_out[step] = daily_output['seed_bank_out_bdgt'] ## !! NEW (module_reproduction)
                     self.co2_abs[step] = daily_output['co2_abs']
                     self.hresp[step] = soil_out['hr']
                     self.csoil[:, step] = soil_out['cs']
