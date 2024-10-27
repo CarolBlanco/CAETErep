@@ -1355,7 +1355,7 @@ class grd:
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
                                      co2, sto, cleaf, cwood, croot,
-                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, self.seed_bank)
+                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank)
 
             # Create a dict with the function output
             daily_output = catch_out_budget(out)
