@@ -202,11 +202,11 @@ def neighbours_index(pos, matrix):
 
 # WARNING keep the lists of budget/carbon3 outputs updated with fortran code
 def catch_out_budget(out):
-    lst = ["evavg", "epavg", "phavg", "aravg", "nppavg",
+    lst = ["evavg", "epavg", "phavg", "aravg", "nppavg", "PLS_seed_bank_out"
            "laiavg", "rcavg", "f5avg", "rmavg", "rgavg", "cleafavg_pft", "cawoodavg_pft",
            "cfrootavg_pft", "stodbg", "ocpavg", "wueavg", "cueavg", "c_defavg", "vcmax",
            "specific_la", "nupt", "pupt", "litter_l", "cwd", "litter_fr", "npp2pay", "lnc", "delta_cveg",
-           "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm', 'PLS_seed_bank_out']
+           "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
 
     return dict(zip(lst, out))
 
