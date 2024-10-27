@@ -1328,7 +1328,8 @@ class grd:
         dca = self.vp_dca
         dcf = self.vp_dcf
         uptk_costs = np.zeros(npls, order='F')
-        seed_bank = self.vp_seed_bank ## NEW (module_reproduction)
+        seed_bank = np.zeros(npls, order='F')
+        #seed_bank = self.vp_seed_bank ## NEW (module_reproduction)
 
         for step in range(steps.size):
             loop += 1
@@ -1505,7 +1506,7 @@ class plot(grd):
 
         ## Reproduction
 
-        self.vp_seed_bank = np.zeros(shape=(npls,), order='F') + 1.0 ## NEW (module_reproduction)
+        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (module_reproduction)
 
 
         self.outputs = dict()
