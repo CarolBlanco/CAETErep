@@ -532,7 +532,7 @@ class grd:
                      'storage_pool': self.storage_pool,
                      'calendar': self.calendar,    # Calendar name
                      'time_unit': self.time_unit,   # Time unit
-                     'seed_bank_out': self.seed_bank_out, # !! NEW (module_reproduction)
+                     'seed_bank_out_1': self.seed_bank_out, # !! NEW (module_reproduction)
                      'sind': index[0],
                      'eind': index[1]}
         # Flush attrs
