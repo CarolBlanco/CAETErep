@@ -609,7 +609,7 @@ contains
       limitation_status_1(:,:) = 0
       uptk_strat_1(:,:) = 0
       npp2pay_1(:) = 0.0
-      PLS_seed_bank_out(:) = 0.0
+      !PLS_seed_bank_out(:) = 0.0
       
 
       ! CALCULATE CWM FOR ECOSYSTEM PROCESSES

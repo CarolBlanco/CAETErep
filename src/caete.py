@@ -1503,7 +1503,7 @@ class plot(grd):
 
         ## Reproduction
 
-        self.vp_seed_bank = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (module_reproduction)
+        self.vp_seed_bank = np.zeros(shape=(npls,), order='F') + 1.0 ## NEW (module_reproduction)
 
 
         self.outputs = dict()
