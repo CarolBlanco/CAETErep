@@ -32,7 +32,7 @@ contains
         &, laiavg, rcavg, f5avg, rmavg, rgavg, cleafavg_pft, cawoodavg_pft&
         &, cfrootavg_pft, storage_out_bdgt_1, ocpavg, wueavg, cueavg, c_defavg&
         &, vcmax_1, specific_la_1, nupt_1, pupt_1, litter_l_1, cwd_1, litter_fr_1, npp2pay_1, lit_nut_content_1&
-        &, delta_cveg_1,co2_abs_se_1, limitation_status_1, uptk_strat_1, cp, c_cost_cwm)
+        &, delta_cveg_1,co2_abs_se_1, limitation_status_1, uptk_strat_1, cp, c_cost_cwm, PLS_seed_bank_out)
 
 
       use types
@@ -115,6 +115,7 @@ contains
       real(r_8),dimension(npls),intent(out) ::  npp2pay_1 ! C costs of N/P uptake
       real(r_8),dimension(4),intent(out) :: cp ! Aux cp(1:3) CVEG C POOLS cp(4) Auxiliary to HR
       real(r_8),intent(out) :: c_cost_cwm
+      real(r_8),dimension(npls),intent(out) ::  PLS_seed_bank_out !! NEW (reproduction) 
       
       !     -----------------------Internal Variables------------------------
       integer(i_4) :: p, counter, nlen, ri, i, j
@@ -322,7 +323,7 @@ contains
       allocate(decayed_seed_bank(nlen))
       allocate(n_seed(nlen)) !NEW ***************
       allocate(germinated_seeds(nlen)) !NEW ***************
-      allocate(remaining_npp(nlen))!NEW ***************
+      !allocate(remaining_npp(nlen))!NEW ***************
       
 
       !     Maximum evapotranspiration   (emax)
@@ -761,12 +762,12 @@ contains
       deallocate(height_int)
       deallocate(crown_int)
       deallocate(co2_abs_se)
-      deallocate(seed_bank) !NEW ***************
-      deallocate(seed_bank_new) !NEW ***************
-      deallocate(decayed_seed_bank)
+      !deallocate(seed_bank) !NEW ***************
+      !deallocate(seed_bank_new) !NEW ***************
+      !deallocate(decayed_seed_bank)
       deallocate(n_seed) !NEW ***************
       deallocate(germinated_seeds) !NEW ***************
-      deallocate(remaining_npp) !NEW ***************
+      !deallocate(remaining_npp) !NEW ***************
 
       
    end subroutine daily_budget
