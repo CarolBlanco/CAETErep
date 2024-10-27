@@ -935,6 +935,7 @@ class grd:
                 dca = np.zeros(npls, order='F')
                 dcf = np.zeros(npls, order='F')
                 uptk_costs = np.zeros(npls, order='F')
+                seed_bank = np.zeros(npls, order='F')
                 
 
                 sto[0, self.vp_lsid] = self.vp_sto[0, :]
@@ -951,6 +952,7 @@ class grd:
                     dca[n] = self.vp_dca[c]
                     dcf[n] = self.vp_dcf[c]
                     uptk_costs[n] = self.sp_uptk_costs[c]
+                    seed_bank[n] = self.vp_seed_bank[c]
                     
 
                     c += 1
@@ -960,7 +962,7 @@ class grd:
                                          self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                          ton, top, self.sp_organic_p, self.sp_csoil, co2, sto, cleaf, cwood, croot,
-                                         dcl, dca, dcf, uptk_costs, self.wmax_mm, self.seed_bank)
+                                         dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank)
 
                 # del sto, cleaf, cwood, croot, dcl, dca, dcf, uptk_costs
                 # Create a dict with the function output
