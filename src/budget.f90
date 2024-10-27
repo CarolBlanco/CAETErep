@@ -378,22 +378,12 @@ contains
          !   REPRODUCTION OF TREES [call SEED PRODUCTION MODULE; SEED GERMINATION; UPDATE BIOMASS POOLS; UPDATE SEEDBAK]
          !   (Bruna R. Soica)
          !==============================================================================================================================
-
-         !if (24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0 .and. nppa(p) .gt. 0.0) then
-         !Garantindo que o banco de sementes não fique negativo
-        ! if (seed_bank(ri) .le. 0.0D0)then
-        !  print *, "**** SEED BANK ERA NEGATIVO E FOI ZERADO *********** " 
-        !    seed_bank(ri) = 0.0D0
-        ! endif
-
-         !germinated_seeds(ri) = 0.0D0
          
-         
+         seed_bank(ri) = PLS_seed_bank_out(p)
 
-         print *, "NPP do PLS", p, ":", nppa(p)
-
-         if (nppa(p) .gt. 0) then ! .and. prec .gt. 60.0) then !!CAROL
+         if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
    
+            print *, "NPP do PLS", p, ":", nppa(p)
             
             call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             !seed_bank(ri) = seed_bank(ri) + n_seed(ri) !!UPDATE SEFEDBANK
