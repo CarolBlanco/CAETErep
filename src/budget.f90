@@ -115,7 +115,7 @@ contains
       real(r_8),dimension(npls),intent(out) ::  npp2pay_1 ! C costs of N/P uptake
       real(r_8),dimension(4),intent(out) :: cp ! Aux cp(1:3) CVEG C POOLS cp(4) Auxiliary to HR
       real(r_8),intent(out) :: c_cost_cwm
-      real(r_8),dimension(npls),intent(out) ::  PLS_seed_bank_out !! NEW (reproduction) 
+      real(r_8),dimension(npls),intent(out) ::  PLS_seed_bank_out !! NEW (module_reproduction) 
       
       !     -----------------------Internal Variables------------------------
       integer(i_4) :: p, counter, nlen, ri, i, j
@@ -153,13 +153,13 @@ contains
       real(r_4),dimension(:),allocatable :: cue
       real(r_4),dimension(:),allocatable :: c_def
       
-      real(r_8),dimension(:),allocatable :: seed_mass    !NEW ***************
-      real(r_4),dimension(:),allocatable :: seed_bank   !NEW ***************
-      real(r_4),dimension(:),allocatable :: seed_bank_new   !NEW ***************
-      real(r_4),dimension(:),allocatable :: decayed_seed_bank   !NEW ***************
-      real(r_4),dimension(:),allocatable :: n_seed    !NEW ***************
-      real(r_4),dimension(:),allocatable :: germinated_seeds   !NEW ***************
-      real(r_4),dimension(:),allocatable :: remaining_npp   !NEW ***************
+      real(r_8),dimension(:),allocatable :: seed_mass    !! NEW (module_reproduction)
+      real(r_4),dimension(:),allocatable :: seed_bank_int   !! NEW (module_reproduction)
+      real(r_4),dimension(:),allocatable :: seed_bank_new   !! NEW (module_reproduction)
+      real(r_4),dimension(:),allocatable :: decayed_seed_bank  !! NEW (module_reproduction)
+      real(r_4),dimension(:),allocatable :: n_seed   !! NEW (module_reproduction)
+      real(r_4),dimension(:),allocatable :: germinated_seeds  !! NEW (module_reproduction)
+      !real(r_4),dimension(:),allocatable :: remaining_npp  !! NEW (module_reproduction)
 
       real(r_8),dimension(:),allocatable :: cl1_int
       real(r_8),dimension(:),allocatable :: cf1_int
@@ -316,14 +316,13 @@ contains
       allocate(crown_int(nlen))
       allocate(co2_abs_se(nlen))
 
-      !allocate(total_seed_mass(nlen)) !NEW ***************
-      allocate(seed_mass(nlen)) !NEW ***************
-      allocate(seed_bank(nlen)) !NEW ***************
-      allocate(seed_bank_new(nlen))
-      allocate(decayed_seed_bank(nlen))
-      allocate(n_seed(nlen)) !NEW ***************
-      allocate(germinated_seeds(nlen)) !NEW ***************
-      !allocate(remaining_npp(nlen))!NEW ***************
+      allocate(seed_mass(nlen)) !! NEW (module_reproduction)
+      allocate(seed_bank_int(nlen)) !! NEW (module_reproduction)
+      allocate(seed_bank_new(nlen)) !! NEW (module_reproduction)
+      allocate(decayed_seed_bank(nlen)) !! NEW (module_reproduction)
+      allocate(n_seed(nlen)) !! NEW (module_reproduction)
+      allocate(germinated_seeds(nlen)) !! NEW (module_reproduction)
+      !allocate(remaining_npp(nlen))!! NEW (module_reproduction)
       
 
       !     Maximum evapotranspiration   (emax)
@@ -610,8 +609,8 @@ contains
       storage_out_bdgt_1(:, :) = 0.0D0
       limitation_status_1(:,:) = 0
       uptk_strat_1(:,:) = 0
-      !seed_bank_out(:) = 0.0D0
       npp2pay_1(:) = 0.0
+      PLS_seed_bank_out(:) = 0.0
       
 
       ! CALCULATE CWM FOR ECOSYSTEM PROCESSES
@@ -706,7 +705,7 @@ contains
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          npp2pay_1(ri) = npp2pay(p)
-         !seed_bank_out(ri)= seed_bank_int(p) !new
+         PLS_seed_bank_out(ri)= seed_bank(p) !! NEW (module_reproduction)
 
       enddo
 
@@ -752,12 +751,12 @@ contains
       deallocate(height_int)
       deallocate(crown_int)
       deallocate(co2_abs_se)
-      !deallocate(seed_bank) !NEW ***************
-      !deallocate(seed_bank_new) !NEW ***************
-      !deallocate(decayed_seed_bank)
-      deallocate(n_seed) !NEW ***************
-      deallocate(germinated_seeds) !NEW ***************
-      !deallocate(remaining_npp) !NEW ***************
+      deallocate(seed_bank_int) !! NEW (module_reproduction)
+      deallocate(seed_bank_new) !! NEW (module_reproduction)
+      deallocate(decayed_seed_bank) !! NEW (module_reproduction)
+      deallocate(n_seed) !! NEW (module_reproduction)
+      deallocate(germinated_seeds) !! NEW (module_reproduction)
+      !deallocate(remaining_npp) !! NEW (module_reproduction)
 
       
    end subroutine daily_budget
