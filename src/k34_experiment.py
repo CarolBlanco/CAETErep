@@ -15,7 +15,7 @@ import plsgen as pls
 from aux_plot import get_var
 
 
-from sklearn.cluster import KMeans
+#from sklearn.cluster import KMeans
 
 idxT = pd.date_range("2000-01-01", "2015-12-31", freq='D', closed=None)
 
