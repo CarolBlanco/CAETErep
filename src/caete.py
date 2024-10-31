@@ -1361,7 +1361,7 @@ class grd:
                                      self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
-                                     seed_bank_out, co2, sto, cleaf, cwood, croot,
+                                     co2, sto, cleaf, cwood, croot,
                                      dcl, dca, dcf, uptk_costs, self.wmax_mm)
 
             # Create a dict with the function output
