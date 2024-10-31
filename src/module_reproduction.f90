@@ -64,7 +64,7 @@ contains
             seed_bank = ((seed_pft + n_seed) - germin)
         endif
 
-        !print*, 'seed_bank', seed_bank
+        print*, 'seed_bank', seed_bank
 
         ! !print *, "valor de npp_rep:", npp_rep
         ! !print *, "valor de nppa", nppa
