@@ -204,9 +204,9 @@ def neighbours_index(pos, matrix):
 def catch_out_budget(out):
     lst = ["evavg", "epavg", "phavg", "aravg", "nppavg",
            "laiavg", "rcavg", "f5avg", "rmavg", "rgavg", "cleafavg_pft", "cawoodavg_pft",
-           "cfrootavg_pft", "stodbg", "ocpavg", "wueavg", "cueavg", "c_defavg", "seed_avg", "vcmax",
+           "cfrootavg_pft", "stodbg", "ocpavg", "wueavg", "cueavg", "c_defavg", "vcmax",
            "specific_la", "nupt", "pupt", "litter_l", "cwd", "litter_fr", "npp2pay", "lnc", "delta_cveg",
-           "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm', 'seed_out']
+            "seed_bank_out_bdgt", "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
 
     return dict(zip(lst, out))
 
@@ -353,13 +353,13 @@ class grd:
         self.litter_l = None
         self.cwd = None
         self.co2_abs = None #*************
-        self.seed = None
         self.litter_fr = None
         self.lnc = None
         self.storage_pool = None
         self.lim_status = None
         self.uptake_strategy = None
         self.carbon_costs = None
+        self.seed_bank_out = None #NEW (module_reproduction)
 
         # WATER POOLS
         # Water content for each soil layer
@@ -388,6 +388,7 @@ class grd:
         self.vp_cleaf = None
         self.vp_croot = None
         self.vp_cwood = None
+        self.vp_seed_bank_out = None # NEW (module_reproduction)
         self.vp_dcl = None
         self.vp_dca = None
         self.vp_dcf = None
@@ -395,14 +396,13 @@ class grd:
         self.vp_wdl = None
         self.vp_sto = None
         self.vp_lsid = None
-        self.vp_seed = None
 
+    
         # Hydraulics
         self.theta_sat = None
         self.psi_sat = None
         self.soil_texture = None
 
-        #Reproduction pools
 
     def _allocate_output_nosave(self, n):
         """allocate space for some tracked variables during spinup
@@ -448,7 +448,6 @@ class grd:
         self.wue = np.zeros(shape=(n,), order='F')
         self.cue = np.zeros(shape=(n,), order='F')
         self.co2_abs = np.zeros(shape=(n,), order='F') #*************
-        self.seed = np.zeros(shape=(n,), order='F')
         self.cdef = np.zeros(shape=(n,), order='F')
         self.nmin = np.zeros(shape=(n,), order='F')
         self.pmin = np.zeros(shape=(n,), order='F')
@@ -463,6 +462,7 @@ class grd:
         self.storage_pool = np.zeros(shape=(3, n), order='F')
         self.ls = np.zeros(shape=(n,), order='F')
         self.carbon_costs = np.zeros(shape=(n,), order='F')
+        self.seed_bank_out = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
 
 
         self.area = np.zeros(shape=(npls, n), order='F')
@@ -514,7 +514,6 @@ class grd:
                      'wue': self.wue,
                      'cue': self.cue,
                      'co2_abs': self.co2_abs,
-                     'seed_avg': self.seed,
                      'cdef': self.cdef,
                      'nmin': self.nmin,
                      'pmin': self.pmin,
@@ -533,6 +532,7 @@ class grd:
                      'storage_pool': self.storage_pool,
                      'calendar': self.calendar,    # Calendar name
                      'time_unit': self.time_unit,   # Time unit
+                     'seed_bank_out': self.seed_bank_out, # !! NEW (module_reproduction)
                      'sind': index[0],
                      'eind': index[1]}
         # Flush attrs
@@ -573,7 +573,6 @@ class grd:
         self.litter_l = None
         self.cwd = None
         self.co2_abs = None
-        self.seed = None
         self.litter_fr = None
         self.lnc = None
         self.storage_pool = None
@@ -581,7 +580,8 @@ class grd:
         self.ls_id = None
         self.lim_status = None
         self.carbon_costs = None,
-        self.uptake_strategy = None
+        self.uptake_strategy = None,
+        self.seed_bank_out = None ##!! NEW (module_reproduction)
 
         return to_pickle
 
@@ -675,6 +675,10 @@ class grd:
         self.vp_croot = np.zeros(shape=(npls,), order='F') + 1.0
         self.vp_cwood = np.zeros(shape=(npls,), order='F') + 0.1
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
+
+        ## NEW (reproduction)
+        self.vp_seed_bank_out = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
+
         # self.vp_cleaf, self.vp_croot, self.vp_cwood = m.spinup2(
         #     1.0, self.pls_table)
         a, b, c, d = m.pft_area_frac(
@@ -685,7 +689,6 @@ class grd:
         self.vp_dca = np.zeros(shape=(npls,), order='F')
         self.vp_dcf = np.zeros(shape=(npls,), order='F')
         self.vp_ocp = np.zeros(shape=(npls,), order='F')
-        self.vp_seed = np.zeros(shape=(npls,), order='F')
         self.vp_sto = np.zeros(shape=(3, npls), order='F')
 
         # # # SOIL
@@ -702,8 +705,6 @@ class grd:
         self.sp_sorganic_n = 0.1 * self.soil_dict['tn']
         self.sp_organic_p = 0.5 * self.soil_dict['op']
         self.sp_sorganic_p = self.soil_dict['op'] - self.sp_organic_p
-
-       ## reproduction
 
         self.outputs = dict()
         self.filled = True
@@ -936,7 +937,8 @@ class grd:
                 dca = np.zeros(npls, order='F')
                 dcf = np.zeros(npls, order='F')
                 uptk_costs = np.zeros(npls, order='F')
-                seed = np.zeros(npls, order='F')
+                seed_bank_out = np.zeros(npls, order='F')
+                
 
                 sto[0, self.vp_lsid] = self.vp_sto[0, :]
                 sto[1, self.vp_lsid] = self.vp_sto[1, :]
@@ -951,29 +953,22 @@ class grd:
                     dcl[n] = self.vp_dcl[c]
                     dca[n] = self.vp_dca[c]
                     dcf[n] = self.vp_dcf[c]
-                    seed[n] = self.vp_seed[c]
-
                     uptk_costs[n] = self.sp_uptk_costs[c]
-
+                    seed_bank_out[n] = self.vp_seed_bank_out[c]
+                    
 
                     c += 1
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
-
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                         self.soil_temp, temp[step], prec[step], p_atm[step],
+                                         self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
-                                         ton, top, self.sp_organic_p, self.sp_csoil, co2, sto, cleaf, cwood, croot,
-                                         dcl, dca, dcf, uptk_costs, self.wmax_mm,seed)
+                                         ton, top, self.sp_organic_p, self.sp_csoil, seed_bank_out, co2, sto, cleaf, cwood, croot,
+                                         dcl, dca, dcf, uptk_costs, self.wmax_mm)
 
                 # del sto, cleaf, cwood, croot, dcl, dca, dcf, uptk_costs
                 # Create a dict with the function output
                 daily_output = catch_out_budget(out)
-
-                #print(daily_output)
-                #wait = input("Press Enter to continue.")
-
-
 
                 self.vp_lsid = np.where(daily_output['ocpavg'] > 0.0)[0]
                 self.vp_ocp = daily_output['ocpavg'][self.vp_lsid]
@@ -995,12 +990,14 @@ class grd:
                         if awood[i] > 0.0:
                             self.vp_cwood[i0] = 0.1
 
+                    ## !! NEW (module_reproduction)
+                    self.vp_seed_bank_out = np.zeros(shape=(self.vp_lsid.size,)) +1.0
+
                     self.vp_dcl = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_dca = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_dcf = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_sto = np.zeros(shape=(3, self.vp_lsid.size))
                     self.sp_uptk_costs = np.zeros(shape=(self.vp_lsid.size,))
-                    self.vp_seed = np.zeros(shape=(self.vp_lsid.size,))
 
                     self.vp_ocp = np.zeros(shape=(self.vp_lsid.size,))
                     del awood
@@ -1019,7 +1016,7 @@ class grd:
                     self.vp_dcf = daily_output['delta_cveg'][2][self.vp_lsid]
                     self.vp_sto = daily_output['stodbg'][:, self.vp_lsid]
                     self.sp_uptk_costs = daily_output['npp2pay'][self.vp_lsid]
-                    self.vp_seed = daily_output['seed_avg'][self.vp_lsid]
+                    self.seed_bank_out = daily_output['seed_bank_out_bdgt'][self.vp_lsid]
 
 
                 # UPDATE STATE VARIABLES
@@ -1221,8 +1218,8 @@ class grd:
                     self.cleaf[step] = daily_output['cp'][0]
                     self.cawood[step] = daily_output['cp'][1]
                     self.cfroot[step] = daily_output['cp'][2]
+                    self.seed_bank_out[step] = daily_output['seed_bank_out_bdgt'] ## !! NEW (module_reproduction)
                     self.co2_abs[step] = daily_output['co2_abs']
-                    self.seed[step] = daily_output['seed_out']
                     self.hresp[step] = soil_out['hr']
                     self.csoil[:, step] = soil_out['cs']
                     self.inorg_n[step] = self.sp_in_n
@@ -1237,8 +1234,6 @@ class grd:
                                     step] = daily_output['limitation_status'][:, self.vp_lsid]
                     self.uptake_strategy[:, self.vp_lsid,
                                          step] = daily_output['uptk_strat'][:, self.vp_lsid]
-                    
-                
                 if ABORT:
                     rwarn("NO LIVING PLS - ABORT")
             gc.collect()
@@ -1338,8 +1333,9 @@ class grd:
         dcl = self.vp_dcl
         dca = self.vp_dca
         dcf = self.vp_dcf
-        seed = self.vp_seed
         uptk_costs = np.zeros(npls, order='F')
+        
+        seed_bank_out = self.vp_seed_bank_out ## NEW (module_reproduction)
 
         for step in range(steps.size):
             loop += 1
@@ -1362,18 +1358,14 @@ class grd:
             self.soil_temp = st.soil_temp(self.soil_temp, temp[step])
 
             out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                     self.soil_temp, temp[step], prec[step], p_atm[step],
+                                     self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
                                      co2, sto, cleaf, cwood, croot,
-                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, seed)
+                                     dcl, dca, dcf, uptk_costs, self.wmax_mm)
 
             # Create a dict with the function output
             daily_output = catch_out_budget(out)
-            #print(daily_output)
-            #wait = input("Press Enter to continue.")
-
-
             runoff = self.swp._update_pool(prec[step], daily_output['evavg'])
 
             self.wp_water_upper_mm = self.swp.w1
@@ -1492,6 +1484,9 @@ class plot(grd):
         self.vp_cwood = np.zeros(shape=(npls,), order='F') + 0.1
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
 
+        ## Reproduction
+        self.vp_seed_bank_out = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (module_reproduction)
+
         a, b, c, d = m.pft_area_frac(
             self.vp_cleaf, self.vp_croot, self.vp_cwood, self.pls_table[6, :])
         self.vp_lsid = np.where(a > 0.0)[0]
@@ -1499,7 +1494,6 @@ class plot(grd):
         del a, b, c, d
         self.vp_dcl = np.zeros(shape=(npls,), order='F')
         self.vp_dca = np.zeros(shape=(npls,), order='F')
-        self.vp_seed = np.zeros(shape=(npls,), order='F')
         self.vp_dcf = np.zeros(shape=(npls,), order='F')
         self.vp_ocp = np.zeros(shape=(npls,), order='F')
         self.vp_sto = np.zeros(shape=(3, npls), order='F')
@@ -1518,8 +1512,6 @@ class plot(grd):
         self.sp_sorganic_n = 0.1 * self.soil_dict['tn']
         self.sp_organic_p = 0.5 * self.soil_dict['op']
         self.sp_sorganic_p = self.soil_dict['op'] - self.sp_organic_p
-
-        ## Reproduction
 
 
         self.outputs = dict()
