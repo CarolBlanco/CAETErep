@@ -156,11 +156,11 @@ contains
       real(r_8),dimension(:),allocatable :: seed_mass    !! NEW (module_reproduction)
       real(r_8),dimension(:),allocatable :: seed_bank_int_repro   !! NEW (module_reproduction)
       !real(r_4),dimension(:),allocatable :: seed_bank_new   !! NEW (module_reproduction)
-      real(r_4),dimension(:),allocatable :: seed_bank_to_decay !! NEW (module_reproduction)
+      real(r_8),dimension(:),allocatable :: seed_bank_to_decay !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: decayed_seed_bank  !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: n_seed   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: germinated_seeds  !! NEW (module_reproduction)
-      real(r_4),dimension(:),allocatable :: seeds_to_germinate  !! NEW (module_reproduction)
+      real(r_8),dimension(:),allocatable :: seeds_to_germinate  !! NEW (module_reproduction)
 
       real(r_8),dimension(:),allocatable :: cl1_int
       real(r_8),dimension(:),allocatable :: cf1_int
@@ -440,7 +440,7 @@ contains
 
          !! ANNUAL SEEDBANK DECAY
          if (n_days .eq. 365) then
-            seedbank_to_decay(ri) = seed_bank_out_bdgt(ri)
+            seed_bank_to_decay(ri) = seed_bank_out_bdgt(ri)
             decayed_seed_bank(ri) = nint(seedbank_to_decay(ri)*0.25)
             seed_bank_out_bdgt(ri) = decayed_seed_bank(ri)
 
