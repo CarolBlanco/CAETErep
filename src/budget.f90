@@ -155,7 +155,8 @@ contains
       
       real(r_8),dimension(:),allocatable :: seed_mass    !! NEW (module_reproduction)
       real(r_8),dimension(:),allocatable :: seed_bank_int_repro   !! NEW (module_reproduction)
-      real(r_4),dimension(:),allocatable :: seed_bank_new   !! NEW (module_reproduction)
+      !real(r_4),dimension(:),allocatable :: seed_bank_new   !! NEW (module_reproduction)
+      real(r_4),dimension(:),allocatable :: seed_bank_to_decay !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: decayed_seed_bank  !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: n_seed   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: germinated_seeds  !! NEW (module_reproduction)
@@ -317,12 +318,14 @@ contains
       allocate(co2_abs_se(nlen))
 
       allocate(seed_mass(nlen)) !! NEW (module_reproduction)
-      allocate(seed_bank_int(nlen)) !! NEW (module_reproduction)
-      allocate(seed_bank_new(nlen)) !! NEW (module_reproduction)
+      allocate(seed_bank_int_repro(nlen)) !! NEW (module_reproduction)
+      !allocate(seed_bank_new(nlen)) !! NEW (module_reproduction)
+      allocate(seed_bank_to_decay(nlen)) !! NEW (module_reproduction)
       allocate(decayed_seed_bank(nlen)) !! NEW (module_reproduction)
       allocate(n_seed(nlen)) !! NEW (module_reproduction)
+      allocate(seeds_to_germinate(nlen)) !! NEW (module_reproduction)
       allocate(germinated_seeds(nlen)) !! NEW (module_reproduction)
-      !allocate(remaining_npp(nlen))!! NEW (module_reproduction)
+      
       
 
       !     Maximum evapotranspiration   (emax)
@@ -433,13 +436,15 @@ contains
          !seed_bank(ri) = decayed_seed_bank(ri)
 
          !print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
+         
 
          !! ANNUAL SEEDBANK DECAY
          if (n_days .eq. 365) then
-            decayed_seed_bank(ri) = nint(seed_bank_int(ri)*0.25)
-            seed_bank_int(ri) = decayed_seed_bank(ri)
+            seedbank_to_decay(ri) = seed_bank_out_bdgt(ri)
+            decayed_seed_bank(ri) = nint(seedbank_to_decay(ri)*0.25)
+            seed_bank_out_bdgt(ri) = decayed_seed_bank(ri)
 
-            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_int(ri)
+            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out_bdgt(ri)
          endif
          
              ! Garantir que seed_bank não se torne negativo após o decay
@@ -704,7 +709,7 @@ contains
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          npp2pay_1(ri) = npp2pay(p)
-         seed_bank_out_bdgt(ri)= seed_bank_int(p) !! NEW (module_reproduction)
+         !seed_bank_out_bdgt(ri)= seed_bank_int(p) !! NEW (module_reproduction)
 
       enddo
 
@@ -750,8 +755,8 @@ contains
       deallocate(height_int)
       deallocate(crown_int)
       deallocate(co2_abs_se)
-      deallocate(seed_bank_int) !! NEW (module_reproduction)
-      deallocate(seed_bank_new) !! NEW (module_reproduction)
+      deallocate(seed_bank_int_repro) !! NEW (module_reproduction)
+      !deallocate(seed_bank_new) !! NEW (module_reproduction)
       deallocate(decayed_seed_bank) !! NEW (module_reproduction)
       deallocate(n_seed) !! NEW (module_reproduction)
       deallocate(germinated_seeds) !! NEW (module_reproduction)
