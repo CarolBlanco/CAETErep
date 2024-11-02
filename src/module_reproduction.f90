@@ -53,6 +53,9 @@ contains
             !npp_after = nppa - npp_rep !remaining npp
         else
             n_seed = 0.0D0
+            seed_mass_log = 0.0D0
+            seed_mass = 0.0D0
+            npp_rep = 0.0D0
             !nppa = npp_after
             print *, "*******PLS não tem altura suficiente para produzir sementes *******"
         endif

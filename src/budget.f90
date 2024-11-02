@@ -154,12 +154,12 @@ contains
       real(r_4),dimension(:),allocatable :: c_def
       
       real(r_8),dimension(:),allocatable :: seed_mass    !! NEW (module_reproduction)
-      real(r_8),dimension(:),allocatable :: seed_bank_int   !! NEW (module_reproduction)
+      real(r_8),dimension(:),allocatable :: seed_bank_int_repro   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: seed_bank_new   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: decayed_seed_bank  !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: n_seed   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: germinated_seeds  !! NEW (module_reproduction)
-      !real(r_4),dimension(:),allocatable :: remaining_npp  !! NEW (module_reproduction)
+      real(r_4),dimension(:),allocatable :: seeds_to_germinate  !! NEW (module_reproduction)
 
       real(r_8),dimension(:),allocatable :: cl1_int
       real(r_8),dimension(:),allocatable :: cf1_int
@@ -378,7 +378,7 @@ contains
          !   (Bruna R. Soica)
          !==============================================================================================================================
          
-         seed_bank_int(ri) = seed_bank_out_bdgt(p)
+         seed_bank_int_repro(ri) = seed_bank_out_bdgt(p)
 
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
    
@@ -387,17 +387,17 @@ contains
             call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
             
             print *, "****Reprodução dia", n_days
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(ri)
             print *, "Altura do PLS", p, "-->", height_aux(ri)
             print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(ri)
             !nppa(p) = remaining_npp(p)
 
             
-            !if (n_seed(ri) .gt. 0) then
-            seed_bank_new(ri) = nint(seed_bank_int(ri) + n_seed(ri))
-            seed_bank_int(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
+            if (n_seed(ri) .gt. 0) then
+            seed_bank_out_bdgt(ri) = nint(seed_bank_int_repro(ri) + n_seed(ri))
+            !seed_bank_int(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
             !else
-            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_int(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(ri)
             !endif
             
 
@@ -406,17 +406,18 @@ contains
          !if (n_days .eq. 0 .and. seed_bank_int(ri) .NE. 0) then !avoid allocating random initial numbers to seed bank
          !   seed_bank_int(ri) = 0.0D0
          !endif
+         seeds_to_germinate(ri) = seed_bank_out_bdgt(ri)
 
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seed_bank_int(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
+         if (seeds_to_germinate(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
 
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank_int(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seeds_to_germinate(ri)
 
-            germinated_seeds(ri) = nint(seed_bank_int(ri)*0.5) !!GERMINATION
+            germinated_seeds(ri) = nint(seeds_to_germinate(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p, "dia", n_days
 
-            seed_bank_int(ri) = nint(seed_bank_int(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
-            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_int(ri)
+            seed_bank_out_bdgt(ri) = nint(seed_bank_out_bdgt(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
+            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(ri)
 
             !if (seed_bank_int(ri) .lt. 0) then
             !   seed_bank_int(ri) = 0
