@@ -398,7 +398,7 @@ contains
             !seed_bank_int(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
             !else
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(ri)
-            !endif
+            endif
             
 
          endif
