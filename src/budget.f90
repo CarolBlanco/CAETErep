@@ -444,12 +444,13 @@ contains
          !print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
 
          !! ANNUAL SEEDBANK DECAY
-         if (n_days .eq. 365) then
+         if (n_days .eq. 365 .and. stored_seed_bank(ri) .gt. 0) then
             seed_bank_to_decay(ri) = stored_seed_bank(ri)
             decayed_seed_bank(ri) = nint(seed_bank_to_decay(ri)*0.25)
             seed_bank_out_bdgt(ri) = decayed_seed_bank(ri)
 
             print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out_bdgt(ri)
+
          endif
          
          
