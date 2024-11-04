@@ -400,7 +400,7 @@ contains
             if (n_seed(ri) .gt. 0) then
             seed_bank_out_bdgt(ri) = nint(seed_bank_int_repro(ri) + n_seed(ri))
             !seed_bank_int(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
-            seeds_to_germinate(ri) = seed_bank_out_bdgt(ri)
+            !seeds_to_germinate(ri) = seed_bank_out_bdgt(ri)
             !else
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(ri)
             endif
@@ -413,11 +413,11 @@ contains
          !endif
 
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seeds_to_germinate(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
+         if (seed_bank_out_bdgt(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
 
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seeds_to_germinate(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank_out_bdgt(ri)
 
-            germinated_seeds(ri) = nint(seeds_to_germinate(ri)*0.5) !!GERMINATION
+            germinated_seeds(ri) = nint(seed_bank_out_bdgt(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p, "dia", n_days
 
             seed_bank_out_bdgt(ri) = nint(seed_bank_out_bdgt(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
