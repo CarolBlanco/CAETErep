@@ -218,6 +218,7 @@ contains
          nwood(i) = nwood_in(i)
          nroot(i) = nroot_in(i)
          uptk_costs(i) = uptk_costs_in(i)
+         seed_bank_int_repro(i) = seed_bank_out_bdgt(i)
 
          do j = 1,3
             sto_budg(j,i) = sto_budg_in(j,i)
@@ -381,7 +382,7 @@ contains
          !   (Bruna R. Soica)
          !==============================================================================================================================
          
-         seed_bank_int_repro(ri) = seed_bank_out_bdgt(p)
+         
 
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
    
@@ -399,6 +400,7 @@ contains
             if (n_seed(ri) .gt. 0) then
             seed_bank_out_bdgt(ri) = nint(seed_bank_int_repro(ri) + n_seed(ri))
             !seed_bank_int(ri) = seed_bank_new(ri)  ! Não altera se não houver produção
+            seeds_to_germinate(ri) = seed_bank_out_bdgt(ri)
             !else
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(ri)
             endif
@@ -409,7 +411,6 @@ contains
          !if (n_days .eq. 0 .and. seed_bank_int(ri) .NE. 0) then !avoid allocating random initial numbers to seed bank
          !   seed_bank_int(ri) = 0.0D0
          !endif
-         seeds_to_germinate(ri) = seed_bank_out_bdgt(ri)
 
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
          if (seeds_to_germinate(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
@@ -436,7 +437,6 @@ contains
          !seed_bank(ri) = decayed_seed_bank(ri)
 
          !print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank(ri)
-         
 
          !! ANNUAL SEEDBANK DECAY
          if (n_days .eq. 365) then
