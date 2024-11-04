@@ -426,7 +426,7 @@ contains
 
             seed_bank_out_bdgt(ri) = nint(seed_bank_out_bdgt(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(ri)
-s
+
             !if (seed_bank_int(ri) .lt. 0) then
             !   seed_bank_int(ri) = 0
             !endif
