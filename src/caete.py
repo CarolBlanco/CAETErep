@@ -359,6 +359,7 @@ class grd:
         self.lim_status = None
         self.uptake_strategy = None
         self.carbon_costs = None
+        self.seed_bank_in = None #NEW (module_reproduction)
         self.seed_bank_out = None #NEW (module_reproduction)
 
         # WATER POOLS
@@ -388,6 +389,7 @@ class grd:
         self.vp_cleaf = None
         self.vp_croot = None
         self.vp_cwood = None
+        self.vp_seed_bank_in = None # NEW (module_reproduction)
         self.vp_seed_bank_out = None # NEW (module_reproduction)
         self.vp_dcl = None
         self.vp_dca = None
@@ -462,6 +464,7 @@ class grd:
         self.storage_pool = np.zeros(shape=(3, n), order='F')
         self.ls = np.zeros(shape=(n,), order='F')
         self.carbon_costs = np.zeros(shape=(n,), order='F')
+        self.seed_bank_in = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
         self.seed_bank_out = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
 
 
@@ -581,6 +584,7 @@ class grd:
         self.lim_status = None
         self.carbon_costs = None,
         self.uptake_strategy = None,
+        self.seed_bank_in = None ##!! NEW (module_reproduction)
         self.seed_bank_out = None ##!! NEW (module_reproduction)
 
         return to_pickle
@@ -677,6 +681,7 @@ class grd:
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
 
         ## NEW (reproduction)
+        self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
         self.vp_seed_bank_out = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
 
         # self.vp_cleaf, self.vp_croot, self.vp_cwood = m.spinup2(
@@ -937,6 +942,7 @@ class grd:
                 dca = np.zeros(npls, order='F')
                 dcf = np.zeros(npls, order='F')
                 uptk_costs = np.zeros(npls, order='F')
+                seed_bank_in = np.zeros(npls, order='F')
                 seed_bank_out = np.zeros(npls, order='F')
                 
 
@@ -954,6 +960,7 @@ class grd:
                     dca[n] = self.vp_dca[c]
                     dcf[n] = self.vp_dcf[c]
                     uptk_costs[n] = self.sp_uptk_costs[c]
+                    seed_bank_in[n] = self.vp_seed_bank_in[c]
                     seed_bank_out[n] = self.vp_seed_bank_out[c]
                     
 
@@ -963,8 +970,8 @@ class grd:
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                          self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
-                                         ton, top, self.sp_organic_p, self.sp_csoil, seed_bank_out, co2, sto, cleaf, cwood, croot,
-                                         dcl, dca, dcf, uptk_costs, self.wmax_mm)
+                                         ton, top, self.sp_organic_p, self.sp_csoil, seed_bank_in, co2, sto, cleaf, cwood, croot,
+                                         dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank_in)
 
                 # del sto, cleaf, cwood, croot, dcl, dca, dcf, uptk_costs
                 # Create a dict with the function output
@@ -991,7 +998,8 @@ class grd:
                             self.vp_cwood[i0] = 0.1
 
                     ## !! NEW (module_reproduction)
-                    self.vp_seed_bank_out = np.zeros(shape=(self.vp_lsid.size,)) +1.0
+                    self.vp_seed_bank_in = np.zeros(shape=(self.vp_lsid.size,))# +1.0
+                    self.vp_seed_bank_out = np.zeros(shape=(self.vp_lsid.size,))# +1.0
 
                     self.vp_dcl = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_dca = np.zeros(shape=(self.vp_lsid.size,))
@@ -1016,7 +1024,7 @@ class grd:
                     self.vp_dcf = daily_output['delta_cveg'][2][self.vp_lsid]
                     self.vp_sto = daily_output['stodbg'][:, self.vp_lsid]
                     self.sp_uptk_costs = daily_output['npp2pay'][self.vp_lsid]
-                    self.seed_bank_out = daily_output['seed_bank_out_bdgt'][self.vp_lsid]
+                    self.seed_bank_in = daily_output['seed_bank_out_bdgt'][self.vp_lsid]
 
 
                 # UPDATE STATE VARIABLES
@@ -1335,7 +1343,7 @@ class grd:
         dcf = self.vp_dcf
         uptk_costs = np.zeros(npls, order='F')
         
-        seed_bank_out = self.vp_seed_bank_out ## NEW (module_reproduction)
+        seed_bank_in = self.vp_seed_bank_out ## NEW (module_reproduction)
 
         for step in range(steps.size):
             loop += 1
@@ -1362,7 +1370,7 @@ class grd:
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
                                      co2, sto, cleaf, cwood, croot,
-                                     dcl, dca, dcf, uptk_costs, self.wmax_mm)
+                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank_in)
 
             # Create a dict with the function output
             daily_output = catch_out_budget(out)

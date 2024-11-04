@@ -28,7 +28,7 @@ contains
 
    subroutine daily_budget(dt, w1, w2, ts, temp, prec, n_days, p0, ipar, rh&
         &, mineral_n, labile_p, on, sop, op, csoil,catm, sto_budg_in, cl1_in, ca1_in, cf1_in, nleaf_in, nwood_in&
-        &, nroot_in, uptk_costs_in, wmax_in, evavg, epavg, phavg, aravg, nppavg&
+        &, nroot_in, uptk_costs_in, wmax_in, stored_seed_bank, evavg, epavg, phavg, aravg, nppavg&
         &, laiavg, rcavg, f5avg, rmavg, rgavg, cleafavg_pft, cawoodavg_pft&
         &, cfrootavg_pft, storage_out_bdgt_1, ocpavg, wueavg, cueavg, c_defavg&
         &, vcmax_1, specific_la_1, nupt_1, pupt_1, litter_l_1, cwd_1, litter_fr_1, npp2pay_1, lit_nut_content_1&
@@ -75,7 +75,7 @@ contains
       real(r_8),dimension(npls),intent(in) :: nroot_in  ! k gm-2
       real(r_8),dimension(npls),intent(in) :: nwood_in  ! k gm-2
       real(r_8),dimension(npls),intent(in) :: uptk_costs_in ! g m-2
-      !real(r_8),dimension(npls),intent(in) :: seed_bank_in  ! initial seed_bank NEW
+      real(r_8),dimension(npls),intent(in) :: stored_seed_bank  ! NEW (module_reproduction)
 
 
 
@@ -218,7 +218,7 @@ contains
          nwood(i) = nwood_in(i)
          nroot(i) = nroot_in(i)
          uptk_costs(i) = uptk_costs_in(i)
-         seed_bank_int_repro(i) = seed_bank_out_bdgt(i)
+         seed_bank_int_repro(i) = stored_seed_bank(i)
 
          do j = 1,3
             sto_budg(j,i) = sto_budg_in(j,i)
@@ -709,6 +709,7 @@ contains
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          npp2pay_1(ri) = npp2pay(p)
+         stored_seed_bank(ri) = seed_bank_out_bdgt(ri)
          !seed_bank_out_bdgt(ri)= seed_bank_int(p) !! NEW (module_reproduction)
 
       enddo
