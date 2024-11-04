@@ -970,8 +970,8 @@ class grd:
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                          self.soil_temp, temp[step], prec[step], count_days, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
-                                         ton, top, self.sp_organic_p, self.sp_csoil, seed_bank_in, co2, sto, cleaf, cwood, croot,
-                                         dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank_in)
+                                         ton, top, self.sp_organic_p, self.sp_csoil, self.seed_bank_in, co2, sto, cleaf, cwood, croot,
+                                         dcl, dca, dcf, uptk_costs, self.wmax_mm, self.seed_bank_in)
 
                 # del sto, cleaf, cwood, croot, dcl, dca, dcf, uptk_costs
                 # Create a dict with the function output
@@ -1343,7 +1343,7 @@ class grd:
         dcf = self.vp_dcf
         uptk_costs = np.zeros(npls, order='F')
         
-        seed_bank_in = self.vp_seed_bank_out ## NEW (module_reproduction)
+        seed_bank_in = self.vp_seed_bank_in ## NEW (module_reproduction)
 
         for step in range(steps.size):
             loop += 1
@@ -1370,7 +1370,7 @@ class grd:
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
                                      co2, sto, cleaf, cwood, croot,
-                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, seed_bank_in)
+                                     dcl, dca, dcf, uptk_costs, self.wmax_mm, self.seed_bank_in)
 
             # Create a dict with the function output
             daily_output = catch_out_budget(out)
