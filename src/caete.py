@@ -535,7 +535,7 @@ class grd:
                      'storage_pool': self.storage_pool,
                      'calendar': self.calendar,    # Calendar name
                      'time_unit': self.time_unit,   # Time unit
-                     #'seed_bank_out': self.seed_bank_out, # !! NEW (module_reproduction)
+                     'seed_bank_in': self.seed_bank_in, # !! NEW (module_reproduction)
                      'sind': index[0],
                      'eind': index[1]}
         # Flush attrs
@@ -681,7 +681,7 @@ class grd:
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
 
         ## NEW (reproduction)
-        self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
+        self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F') + 1.0 ### + 1????? # !! NEW (module_reproduction)
         #self.vp_seed_bank_out = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
 
         # self.vp_cleaf, self.vp_croot, self.vp_cwood = m.spinup2(
@@ -968,7 +968,7 @@ class grd:
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                         self.soil_temp, temp[step], prec[step], count_days, self.seed_bank_in, p_atm[step],
+                                         self.soil_temp, temp[step], prec[step], count_days, seed_bank_in, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                          ton, top, self.sp_organic_p, self.sp_csoil, co2, sto, cleaf, cwood, croot,
                                          dcl, dca, dcf, uptk_costs, self.wmax_mm)
@@ -998,7 +998,7 @@ class grd:
                             self.vp_cwood[i0] = 0.1
 
                     ## !! NEW (module_reproduction)
-                    self.vp_seed_bank_in = np.zeros(shape=(self.vp_lsid.size,))# +1.0
+                    self.vp_seed_bank_in = np.zeros(shape=(self.vp_lsid.size,)) +1.0
                     #self.vp_seed_bank_out = np.zeros(shape=(self.vp_lsid.size,))# +1.0
 
                     self.vp_dcl = np.zeros(shape=(self.vp_lsid.size,))
@@ -1343,7 +1343,7 @@ class grd:
         dcf = self.vp_dcf
         uptk_costs = np.zeros(npls, order='F')
         
-        self.seed_bank_in = self.vp_seed_bank_in
+        seed_bank_in = self.vp_seed_bank_in
         #self.seed_bank_out = self.vp_seed_bank_out ## NEW (module_reproduction)
 
         for step in range(steps.size):
@@ -1367,7 +1367,7 @@ class grd:
             self.soil_temp = st.soil_temp(self.soil_temp, temp[step])
 
             out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                     self.soil_temp, temp[step], prec[step], count_days, self.seed_bank_in, p_atm[step],
+                                     self.soil_temp, temp[step], prec[step], count_days, seed_bank_in, p_atm[step],
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
                                      co2, sto, cleaf, cwood, croot,
@@ -1494,7 +1494,7 @@ class plot(grd):
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
 
         ## Reproduction
-        self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F')# + 1.0 ## NEW (module_reproduction)
+        self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F') + 1.0 ## NEW (module_reproduction)
 
         a, b, c, d = m.pft_area_frac(
             self.vp_cleaf, self.vp_croot, self.vp_cwood, self.pls_table[6, :])
