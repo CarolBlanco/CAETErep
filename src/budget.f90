@@ -709,7 +709,7 @@ contains
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          npp2pay_1(ri) = npp2pay(p)
-         stored_seed_bank(ri) = seed_bank_out_bdgt(ri)
+         stored_seed_bank(p) = seed_bank_out_bdgt(p)
          !seed_bank_out_bdgt(ri)= seed_bank_int(p) !! NEW (module_reproduction)
 
       enddo
