@@ -383,10 +383,12 @@ contains
          !==============================================================================================================================
          
          
-         seed_bank_int_repro(i) = stored_seed_bank(i)
+         
          
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
-   
+            
+            seed_bank_int_repro(ri) = stored_seed_bank(ri)
+
             print *, "NPP do PLS", p, ":", nppa(p)
             
             call repro(nppa(p), height_aux(ri), seed_mass(ri), n_seed(ri))!, remaining_npp(p)) ! seed_bank(ri), new_seed_bank(ri)) ! ---> Usar height_aux(ri) ou height_aux(p) ???
@@ -414,22 +416,24 @@ contains
          !endif
 
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seed_bank_out_bdgt(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
+         if (stored_seed_bank(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
+            
+            seeds_to_germinate(ri) = stored_seed_bank(ri)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seeds_to_germinate(ri)
 
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank_out_bdgt(ri)
-
-            germinated_seeds(ri) = nint(seed_bank_out_bdgt(ri)*0.5) !!GERMINATION
+            germinated_seeds(ri) = nint(seeds_to_germinate(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(ri), "sementes do PLS ", p, "dia", n_days
 
             seed_bank_out_bdgt(ri) = nint(seed_bank_out_bdgt(ri) - germinated_seeds(ri)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(ri)
-
+s
             !if (seed_bank_int(ri) .lt. 0) then
             !   seed_bank_int(ri) = 0
             !endif
 
          endif
          
+
          !germinated_seeds(ri) = 0.0D0
          
          !! DAILY SEEDBANK DECAY
@@ -441,12 +445,13 @@ contains
 
          !! ANNUAL SEEDBANK DECAY
          if (n_days .eq. 365) then
-            seed_bank_to_decay(ri) = seed_bank_out_bdgt(ri)
+            seed_bank_to_decay(ri) = stored_seed_bank(ri)
             decayed_seed_bank(ri) = nint(seed_bank_to_decay(ri)*0.25)
             seed_bank_out_bdgt(ri) = decayed_seed_bank(ri)
 
             print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out_bdgt(ri)
          endif
+         
          
              ! Garantir que seed_bank não se torne negativo após o decay
             !if (seed_bank(ri) < 0) then
@@ -710,7 +715,7 @@ contains
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          uptk_strat_1(:,ri) = uptk_strat(:,p)
          npp2pay_1(ri) = npp2pay(p)
-         stored_seed_bank(ri) = seed_bank_out_bdgt(p) !! NEW (module_reproduction)
+         !stored_seed_bank(ri) = seed_bank_out_bdgt(p) !! NEW (module_reproduction)
          
 
       enddo
