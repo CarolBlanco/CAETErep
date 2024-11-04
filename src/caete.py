@@ -960,7 +960,7 @@ class grd:
                     dca[n] = self.vp_dca[c]
                     dcf[n] = self.vp_dcf[c]
                     uptk_costs[n] = self.sp_uptk_costs[c]
-                    seed_bank_in[n] = self.vp_seed_bank_in[c]
+                    #seed_bank_in[n] = self.vp_seed_bank_in[c]
                     seed_bank_in[n] = self.vp_seed_bank_out[c]
                     
 
