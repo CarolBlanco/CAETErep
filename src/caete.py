@@ -360,7 +360,7 @@ class grd:
         self.uptake_strategy = None
         self.carbon_costs = None
         self.seed_bank_in = None #NEW (module_reproduction)
-        #self.seed_bank_out = None #NEW (module_reproduction)
+        
 
         # WATER POOLS
         # Water content for each soil layer
@@ -465,7 +465,7 @@ class grd:
         self.ls = np.zeros(shape=(n,), order='F')
         self.carbon_costs = np.zeros(shape=(n,), order='F')
         self.seed_bank_in = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
-        #self.seed_bank_out = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
+        
 
 
         self.area = np.zeros(shape=(npls, n), order='F')
@@ -535,7 +535,6 @@ class grd:
                      'storage_pool': self.storage_pool,
                      'calendar': self.calendar,    # Calendar name
                      'time_unit': self.time_unit,   # Time unit
-                     'seed_bank_in': self.seed_bank_in, # !! NEW (module_reproduction)
                      'sind': index[0],
                      'eind': index[1]}
         # Flush attrs
@@ -584,8 +583,7 @@ class grd:
         self.lim_status = None
         self.carbon_costs = None,
         self.uptake_strategy = None,
-        self.seed_bank_in = None ##!! NEW (module_reproduction)
-        #self.seed_bank_out = None ##!! NEW (module_reproduction)
+        
 
         return to_pickle
 
@@ -681,7 +679,7 @@ class grd:
         self.vp_cwood[pls_table[6,:] == 0.0] = 0.0
 
         ## NEW (reproduction)
-        self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F') + 1.0 ### + 1????? # !! NEW (module_reproduction)
+        self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
         #self.vp_seed_bank_out = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
 
         # self.vp_cleaf, self.vp_croot, self.vp_cwood = m.spinup2(
@@ -943,7 +941,7 @@ class grd:
                 dcf = np.zeros(npls, order='F')
                 uptk_costs = np.zeros(npls, order='F')
                 seed_bank_in = np.zeros(npls, order='F')
-                #seed_bank_out = np.zeros(npls, order='F')
+                
                 
 
                 sto[0, self.vp_lsid] = self.vp_sto[0, :]
@@ -998,8 +996,8 @@ class grd:
                             self.vp_cwood[i0] = 0.1
 
                     ## !! NEW (module_reproduction)
-                    self.vp_seed_bank_in = np.zeros(shape=(self.vp_lsid.size,)) +1.0
-                    #self.vp_seed_bank_out = np.zeros(shape=(self.vp_lsid.size,))# +1.0
+                    self.vp_seed_bank_in = np.zeros(shape=(self.vp_lsid.size,))
+                    
 
                     self.vp_dcl = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_dca = np.zeros(shape=(self.vp_lsid.size,))
@@ -1344,7 +1342,7 @@ class grd:
         uptk_costs = np.zeros(npls, order='F')
         
         seed_bank_in = self.vp_seed_bank_in
-        #self.seed_bank_out = self.vp_seed_bank_out ## NEW (module_reproduction)
+        
 
         for step in range(steps.size):
             loop += 1
