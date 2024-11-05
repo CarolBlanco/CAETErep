@@ -404,6 +404,7 @@ contains
             
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(p)
 
+            !stored_seed_bank(p) = stored_seed_bank(p) + seed_bank_out_bdgt(p)
 
             endif
             
@@ -424,7 +425,7 @@ contains
             seed_bank_out_bdgt(p) = nint(seed_bank_out_bdgt(p) - germinated_seeds(p)) !!UPDATE SEEDBANK
             print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(p)
 
-            
+            !stored_seed_bank(p) = stored_seed_bank(p) + seed_bank_out_bdgt(p)
 
          endif
          
@@ -600,7 +601,7 @@ contains
       limitation_status_1(:,:) = 0
       uptk_strat_1(:,:) = 0
       npp2pay_1(:) = 0.0
-      !PLS_seed_bank_out(:) = 0.0
+      seed_bank_out_bdgt(:) = 0.0D0 !! NEW (module_reproduction)
       
 
       ! CALCULATE CWM FOR ECOSYSTEM PROCESSES
@@ -743,11 +744,10 @@ contains
       deallocate(crown_int)
       deallocate(co2_abs_se)
       deallocate(seed_bank_int_repro) !! NEW (module_reproduction)
-      !deallocate(seed_bank_new) !! NEW (module_reproduction)
       deallocate(decayed_seed_bank) !! NEW (module_reproduction)
       deallocate(n_seed) !! NEW (module_reproduction)
       deallocate(germinated_seeds) !! NEW (module_reproduction)
-      !deallocate(remaining_npp) !! NEW (module_reproduction)
+      
 
       
    end subroutine daily_budget
