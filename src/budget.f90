@@ -415,7 +415,7 @@ contains
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
          if (stored_seed_bank(p) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
             
-            seeds_to_germinate(p) = stored_seed_bank(p))
+            seeds_to_germinate(p) = stored_seed_bank(p)
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seeds_to_germinate(p)
 
             germinated_seeds(p) = nint(seeds_to_germinate(p)*0.5) !!GERMINATION
