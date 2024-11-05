@@ -217,7 +217,7 @@ contains
          nwood(i) = nwood_in(i)
          nroot(i) = nroot_in(i)
          uptk_costs(i) = uptk_costs_in(i)
-         seed_bank_int_repro(i) = stored_seed_bank(i)
+         
          
 
          do j = 1,3
@@ -382,7 +382,7 @@ contains
          !==============================================================================================================================
          
          
-         
+         seed_bank_int_repro(p) = stored_seed_bank(p)
          
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
             
