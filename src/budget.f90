@@ -386,13 +386,15 @@ contains
          !==============================================================================================================================
          
          
+
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
          
             print *, "****Reprodução dia", n_days
             print *, "NPP do PLS", p, ":", nppa(p)
             print *, "Altura do PLS", p, "-->", height_aux(p)
 
-            seed_bank_int_repro(p) = seed_bank_out_bdgt(p)
+            !seed_bank_int_repro(p) = seed_bank_out_bdgt(p)
+            seed_bank_int_repro(p) = stored_seed_bank(p)
             
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(p)
 
