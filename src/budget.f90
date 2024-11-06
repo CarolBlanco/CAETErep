@@ -405,12 +405,15 @@ contains
             
             if (n_seed(p) .gt. 0) then
             
+            !seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
             seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
 
-            seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) + seed_bank_out_repro(p)
-            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(p)
+            !seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) + seed_bank_out_repro(p)
+            stored_seed_bank(p) = stored_seed_bank(p) + seed_bank_out_repro(p)
+
+            !print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(p)
+            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", stored_seed_bank(p)
             
-            stored_seed_bank(p) = seed_bank_out_bdgt(p)
 
             else 
                seed_bank_out_repro(p) = 0.0D0
@@ -418,6 +421,7 @@ contains
                print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_repro(p)
             endif
             
+            seed_bank_out_bdgt(p) = stored_seed_bank(p)
 
          endif
          
@@ -431,10 +435,14 @@ contains
             germinated_seeds(p) = nint(seeds_to_germinate(p)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(p), "sementes do PLS ", p, "dia", n_days
 
-            seed_bank_out_germination(p) = nint(seed_bank_out_bdgt(p) - germinated_seeds(p)) !!UPDATE SEEDBANK
+            seed_bank_out_germination(p) = nint(seeds_to_germinate(p) - germinated_seeds(p)) !!UPDATE SEEDBANK
 
-            seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) - seed_bank_out_germination(p)
-            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(p)
+            !seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) - seed_bank_out_germination(p)
+            stored_seed_bank(p) = stored_seed_bank(p) - seed_bank_out_germination(p)
+
+            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", stored_seed_bank(p)
+
+            seed_bank_out_bdgt(p) = stored_seed_bank(p)
 
          endif
          
@@ -444,10 +452,12 @@ contains
          if (n_days .eq. 365 .and. stored_seed_bank(p) .gt. 0) then
             seed_bank_to_decay(p) = stored_seed_bank(p)
             decayed_seed_bank(p) = nint(seed_bank_to_decay(p)*0.25)
-            seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) - decayed_seed_bank(p)
+            !seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) - decayed_seed_bank(p)
+            stored_seed_bank(p) = stored_seed_bank(p) - decayed_seed_bank(p)
 
-            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out_bdgt(p)
-
+            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", stored_seed_bank(p)
+            
+            seed_bank_out_bdgt(p) = stored_seed_bank(p)
          endif
          
          
