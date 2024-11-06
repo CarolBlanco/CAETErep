@@ -409,7 +409,7 @@ contains
             seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
 
             !seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) + seed_bank_out_repro(p)
-            stored_seed_bank(p) = stored_seed_bank(p) + seed_bank_out_repro(p)
+            stored_seed_bank(p) = seed_bank_int_repro(p) + seed_bank_out_repro(p)
 
             !print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(p)
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", stored_seed_bank(p)
