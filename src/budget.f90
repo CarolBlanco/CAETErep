@@ -390,11 +390,11 @@ contains
          
             print *, "****Reprodução dia", n_days
             print *, "NPP do PLS", p, ":", nppa(p)
-            
+            print *, "Altura do PLS", p, "-->", height_aux(p)
+
             seed_bank_int_repro(p) = seed_bank_out_bdgt(p)
             
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(p)
-            print *, "Altura do PLS", p, "-->", height_aux(p)
 
             call repro(nppa(p), height_aux(p), seed_mass(p), n_seed(p))
 
@@ -404,7 +404,6 @@ contains
             if (n_seed(p) .gt. 0) then
             
             seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
-            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_repro(p)
 
             seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) + seed_bank_out_repro(p)
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(p)
