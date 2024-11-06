@@ -409,6 +409,8 @@ contains
 
             seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) + seed_bank_out_repro(p)
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(p)
+            
+            stored_seed_bank(p) = seed_bank_out_bdgt(p)
 
             else 
                seed_bank_out_repro(p) = 0.0D0
@@ -419,12 +421,11 @@ contains
 
          endif
          
-         
 
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seed_bank_out_bdgt(p) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
+         if (stored_seed_bank(p) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
             
-            seeds_to_germinate(p) = seed_bank_out_bdgt(p)
+            seeds_to_germinate(p) = stored_seed_bank(p)
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seeds_to_germinate(p)
 
             germinated_seeds(p) = nint(seeds_to_germinate(p)*0.5) !!GERMINATION
@@ -437,11 +438,11 @@ contains
 
          endif
          
-
+   
          
          !! ANNUAL SEEDBANK DECAY
-         if (n_days .eq. 365 .and. seed_bank_out_bdgt(p) .gt. 0) then
-            seed_bank_to_decay(p) = seed_bank_out_bdgt(p)
+         if (n_days .eq. 365 .and. stored_seed_bank(p) .gt. 0) then
+            seed_bank_to_decay(p) = stored_seed_bank(p)
             decayed_seed_bank(p) = nint(seed_bank_to_decay(p)*0.25)
             seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) - decayed_seed_bank(p)
 
