@@ -322,11 +322,13 @@ contains
 
       allocate(seed_mass(nlen)) !! NEW (module_reproduction)
       allocate(seed_bank_int_repro(nlen)) !! NEW (module_reproduction)
+      allocate(seed_bank_out_repro(nlen)) !! NEW (module_reproduction)
       allocate(seed_bank_to_decay(nlen)) !! NEW (module_reproduction)
       allocate(decayed_seed_bank(nlen)) !! NEW (module_reproduction)
       allocate(n_seed(nlen)) !! NEW (module_reproduction)
       allocate(seeds_to_germinate(nlen)) !! NEW (module_reproduction)
       allocate(germinated_seeds(nlen)) !! NEW (module_reproduction)
+      allocate(seed_bank_out_germination(nlen)) !! NEW (module_reproduction)
       
       
 
@@ -603,7 +605,7 @@ contains
       limitation_status_1(:,:) = 0
       uptk_strat_1(:,:) = 0
       npp2pay_1(:) = 0.0
-      seed_bank_out_bdgt(:) = 0.0D0 !! NEW (module_reproduction)
+      !seed_bank_out_bdgt(:) = 0.0D0 !! NEW (module_reproduction)
       
 
       ! CALCULATE CWM FOR ECOSYSTEM PROCESSES
@@ -631,7 +633,6 @@ contains
       cwd_1 = sum(cwd * ocp_coeffs, mask= .not. isnan(cwd))
       litter_fr_1 = sum(litter_fr * ocp_coeffs, mask= .not. isnan(litter_fr))
       c_cost_cwm = sum(npp2pay * ocp_coeffs, mask= .not. isnan(npp2pay))
-      !seed_bank_pls = sum(seed_bank_int * ocp_coeffs, mask= .not. isnan(seed_bank_int))
       co2_abs_se_1 = sum(co2_abs_se * ocp_coeffs, mask= .not. isnan(co2_abs_se))*10
 
       cp(1) = sum(cl1_int * ocp_coeffs, mask= .not. isnan(cl1_int))
@@ -746,10 +747,11 @@ contains
       deallocate(crown_int)
       deallocate(co2_abs_se)
       deallocate(seed_bank_int_repro) !! NEW (module_reproduction)
+      deallocate(seed_bank_out_repro) !! NEW (module_reproduction)
       deallocate(decayed_seed_bank) !! NEW (module_reproduction)
       deallocate(n_seed) !! NEW (module_reproduction)
       deallocate(germinated_seeds) !! NEW (module_reproduction)
-      
+      deallocate(seed_bank_out_germination) !! NEW (module_reproduction)
 
       
    end subroutine daily_budget
