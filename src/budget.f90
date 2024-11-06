@@ -386,22 +386,23 @@ contains
          !==============================================================================================================================
          
          
-         seed_bank_int_repro(p) = seed_bank_out_bdgt(p)
-         
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
          
-            
-            call repro(nppa(p), height_aux(p), seed_mass(p), n_seed(p))
-            
             print *, "****Reprodução dia", n_days
             print *, "NPP do PLS", p, ":", nppa(p)
+            
+            seed_bank_int_repro(p) = seed_bank_out_bdgt(p)
+            
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(p)
             print *, "Altura do PLS", p, "-->", height_aux(p)
+
+            call repro(nppa(p), height_aux(p), seed_mass(p), n_seed(p))
+
             print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(p)
-            
 
             
             if (n_seed(p) .gt. 0) then
+            
             seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
             print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_repro(p)
 
