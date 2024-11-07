@@ -156,13 +156,9 @@ contains
       real(r_8),dimension(:),allocatable :: seed_mass    !! NEW (module_reproduction)
       real(r_8),dimension(:),allocatable :: seed_bank_int_repro   !! NEW (module_reproduction)
       real(r_8),dimension(:),allocatable :: seed_bank_out_repro   !! NEW (module_reproduction)
-      real(r_8),dimension(:),allocatable :: seed_bank_out   !! NEW (module_reproduction)
-      real(r_8),dimension(:),allocatable :: seed_bank_to_decay !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: decayed_seed_bank  !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: n_seed   !! NEW (module_reproduction)
       real(r_4),dimension(:),allocatable :: germinated_seeds  !! NEW (module_reproduction)
-      real(r_8),dimension(:),allocatable :: seeds_to_germinate  !! NEW (module_reproduction)
-      real(r_8),dimension(:),allocatable :: seed_bank_out_germination   !! NEW (module_reproduction)
 
       real(r_8),dimension(:),allocatable :: cl1_int
       real(r_8),dimension(:),allocatable :: cf1_int
@@ -324,13 +320,9 @@ contains
       allocate(seed_mass(nlen)) !! NEW (module_reproduction)
       allocate(seed_bank_int_repro(nlen)) !! NEW (module_reproduction)
       allocate(seed_bank_out_repro(nlen)) !! NEW (module_reproduction)
-      allocate(seed_bank_out(nlen)) !! NEW (module_reproduction)
-      allocate(seed_bank_to_decay(nlen)) !! NEW (module_reproduction)
       allocate(decayed_seed_bank(nlen)) !! NEW (module_reproduction)
       allocate(n_seed(nlen)) !! NEW (module_reproduction)
-      allocate(seeds_to_germinate(nlen)) !! NEW (module_reproduction)
       allocate(germinated_seeds(nlen)) !! NEW (module_reproduction)
-      allocate(seed_bank_out_germination(nlen)) !! NEW (module_reproduction)
       
       
 
@@ -393,30 +385,25 @@ contains
          
             print *, "****Reprodução dia", n_days
             print *, "NPP do PLS", p, ":", nppa(p)
-            print *, "Altura do PLS", p, "-->", height_aux(p)
+            print *, "Altura do PLS", p, "-->", height_aux(ri)
 
             !seed_bank_int_repro(p) = seed_bank_out_bdgt(p)
-            seed_bank_int_repro(p) = stored_seed_bank(p)
+            seed_bank_int_repro(p) = stored_seed_bank(ri)
             
             print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(p)
 
-            call repro(nppa(p), height_aux(p), seed_mass(p), n_seed(p))
+            call repro(nppa(p), height_aux(ri), seed_mass(p), n_seed(p))
 
             print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(p)
 
             
             if (n_seed(p) .gt. 0) then
             
-            !seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
-            seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
+               seed_bank_out_repro(p) = nint(seed_bank_int_repro(p) + n_seed(p))
 
-            !seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) + seed_bank_out_repro(p)
-            seed_bank_out(p) = seed_bank_int_repro(p) + seed_bank_out_repro(p)
+               seed_bank_out_bdgt(ri) = seed_bank_out_bdgt(ri) + seed_bank_out_repro(p) 
 
-            !print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(p)
-            print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out(p)
-            
-            seed_bank_out_bdgt(p) = seed_bank_out(p)
+               print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(ri)
 
             else 
                seed_bank_out_repro(p) = 0.0D0
@@ -430,37 +417,33 @@ contains
          
 
          !if (23.0 .ge. temp .and. temp .le. 30.0 .and. seed_bank(ri)>0) then  
-         if (seed_bank_out_bdgt(p) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
+         if (seed_bank_out_bdgt(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
             
-            seeds_to_germinate(p) = seed_bank_out_bdgt(p)
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seeds_to_germinate(p)
 
-            germinated_seeds(p) = nint(seeds_to_germinate(p)*0.5) !!GERMINATION
+            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank_out_bdgt(ri)
+
+            germinated_seeds(p) = nint(seed_bank_out_bdgt(ri)*0.5) !!GERMINATION
             print *, "***** Germinaram:", germinated_seeds(p), "sementes do PLS ", p, "dia", n_days
 
-            seed_bank_out_germination(p) = nint(seeds_to_germinate(p) - germinated_seeds(p)) !!UPDATE SEEDBANK
+            seed_bank_out_bdgt(ri) = nint(seed_bank_out_bdgt(ri) - germinated_seeds(p)) !!UPDATE SEEDBANK
 
-            !seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) - seed_bank_out_germination(p)
-            seed_bank_out(p) = seed_bank_out(p) - seed_bank_out_germination(p)
 
-            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out(p)
+            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(ri)
 
-            seed_bank_out_bdgt(p) = seed_bank_out(p)
 
          endif
          
    
          
          !! ANNUAL SEEDBANK DECAY
-         if (n_days .eq. 365 .and. seed_bank_out_bdgt(p) .gt. 0) then
-            seed_bank_to_decay(p) = seed_bank_out_bdgt(p)
-            decayed_seed_bank(p) = nint(seed_bank_to_decay(p)*0.25)
-            !seed_bank_out_bdgt(p) = seed_bank_out_bdgt(p) - decayed_seed_bank(p)
-            seed_bank_out(p) = seed_bank_out(p) - decayed_seed_bank(p)
-
-            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out(p)
+         if (n_days .eq. 365 .and. seed_bank_out_bdgt(ri) .gt. 0) then
+         
+            decayed_seed_bank(p) = nint(seed_bank_out_bdgt(ri)*0.25)
             
-            seed_bank_out_bdgt(p) = seed_bank_out(p)
+            seed_bank_out_bdgt(ri) = seed_bank_out_bdgt(ri) - decayed_seed_bank(p)
+
+            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out_bdgt(ri)
+         
 
          endif
          
@@ -766,12 +749,11 @@ contains
       deallocate(crown_int)
       deallocate(co2_abs_se)
       deallocate(seed_bank_int_repro) !! NEW (module_reproduction)
-      deallocate(seed_bank_out) !! NEW (module_reproduction)
       deallocate(seed_bank_out_repro) !! NEW (module_reproduction)
       deallocate(decayed_seed_bank) !! NEW (module_reproduction)
       deallocate(n_seed) !! NEW (module_reproduction)
       deallocate(germinated_seeds) !! NEW (module_reproduction)
-      deallocate(seed_bank_out_germination) !! NEW (module_reproduction)
+      
 
       
    end subroutine daily_budget
