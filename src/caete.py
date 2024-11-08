@@ -961,11 +961,14 @@ class grd:
                     #seed_bank_in[n] = self.vp_seed_bank_in[c]
                     seed_bank_in[n] = self.vp_seed_bank_in[c]
                     
-                    print(f"seed_bank_in{seed_bank_in}")
+                    
 
                     c += 1
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
+
+                print(f"seed_bank_in{seed_bank_in}")
+                
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                          self.soil_temp, temp[step], prec[step], count_days, seed_bank_in, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
