@@ -384,17 +384,17 @@ contains
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
          
             print *, "****Reprodução dia", n_days
-            print *, "NPP do PLS", p, ":", nppa(p)
-            print *, "Altura do PLS", p, "-->", height_aux(ri)
+            !print *, "NPP do PLS", p, ":", nppa(p)
+            !print *, "Altura do PLS", p, "-->", height_aux(ri)
 
-            !seed_bank_int_repro(p) = seed_bank_out_bdgt(p)
+            
             seed_bank_int_repro(p) = stored_seed_bank(ri)
             
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(p)
+            !print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(p)
 
             call repro(nppa(p), height_aux(ri), seed_mass(p), n_seed(p))
 
-            print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(p)
+            !print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(p)
 
             
             if (n_seed(p) .gt. 0) then
@@ -403,12 +403,12 @@ contains
 
                seed_bank_out_bdgt(ri) = seed_bank_out_bdgt(ri) + seed_bank_out_repro(p) 
 
-               print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(ri)
+               !print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_bdgt(ri)
 
             else 
                seed_bank_out_repro(p) = 0.0D0
 
-               print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_repro(p)
+               !print *, "Tamanho do banco de sementes do PLS n.", p , "após a nova produção_na_budget:", seed_bank_out_repro(p)
             endif
             
             
@@ -420,15 +420,15 @@ contains
          if (seed_bank_out_bdgt(ri) .gt. 0) then ! .and. temp .ge. 23.0) then !CAROL
             
 
-            print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank_out_bdgt(ri)
+            !print *, "Tamanho do banco de sementes do PLS n.", p, "antes da germinação:", seed_bank_out_bdgt(ri)
 
             germinated_seeds(p) = nint(seed_bank_out_bdgt(ri)*0.5) !!GERMINATION
-            print *, "***** Germinaram:", germinated_seeds(p), "sementes do PLS ", p, "dia", n_days
+            !print *, "***** Germinaram:", germinated_seeds(p), "sementes do PLS ", p, "dia", n_days
 
             seed_bank_out_bdgt(ri) = nint(seed_bank_out_bdgt(ri) - germinated_seeds(p)) !!UPDATE SEEDBANK
 
 
-            print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(ri)
+            !print *, "Tamanho do banco de sementes do PLS n.", p, "após a germinação:", seed_bank_out_bdgt(ri)
 
 
          endif
@@ -442,7 +442,7 @@ contains
             
             seed_bank_out_bdgt(ri) = seed_bank_out_bdgt(ri) - decayed_seed_bank(p)
 
-            print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out_bdgt(ri)
+            !print *, "Tamanho do banco de sementes do PLS n. ", p, " após a decaimento:", seed_bank_out_bdgt(ri)
          
 
          endif
