@@ -42,7 +42,7 @@ co2 = "../input/co2/historical_CO2_annual_1765_2018.txt"
 with open(co2) as fh:
     co2_data = fh.readlines()
 
-# 
+#
 def apply_spin(grid):
     """pre-spinup use some outputs of daily budget (water, litter C, N and P) to start soil organic pools"""
     w, ll, cwd, rl, lnc = grid.bdg_spinup(
@@ -60,7 +60,7 @@ def run_experiment(pls_table):
     t2 = datetime.datetime(year=2006,month=12,day=31,hour=0,minute=0,second=0)
 
     # Find the index of the input data array for required dates
-    # Will use this to manipulate the input data in sensitivity experiments  
+    # Will use this to manipulate the input data in sensitivity experiments
     idx0 = int(nc.date2index(t1, tm1, calendar="proleptic_gregorian", select='nearest'))
     idx1 = int(nc.date2index(t2, tm1, calendar="proleptic_gregorian", select='nearest'))
 
@@ -85,8 +85,8 @@ def run_experiment(pls_table):
 
     cax_grd.run_caete('19790101', '19991231', spinup=15,
                        fix_co2='1999', save=True)
-    
-    # cax_grd.pr[idx0:idx1 + 1] *= 0.01 
+
+    # cax_grd.pr[idx0:idx1 + 1] *= 0.01
 
     # Run the experiment!
     cax_grd.run_caete('19790101', '20151231', spinup=1, save=True)
@@ -109,7 +109,7 @@ def get_spin(grd: mod.grd, spin) -> dict:
 
 if __name__ == "__main__":
     pass
-    pls_table = pls.table_gen(1000, Path("./CAX_PLS_TABLE"))
+    pls_table = pls.table_gen(100, Path("./CAX_PLS_TABLE"))
     cax = run_experiment(pls_table)
 
 
@@ -166,7 +166,7 @@ if __name__ == "__main__":
 # def pk2csv2(grd: mod.plot, spin) -> pd.DataFrame:
 #     exp = 1
 #     spin_dt = get_spin(grd, spin)
-   
+
 #     CT1 = pd.read_csv("../k34/CODE_TABLE2.csv")
 
 #     # READ PLS_TABLE:
@@ -184,7 +184,7 @@ if __name__ == "__main__":
 #     idxT1 = pd.date_range("2000-01-01", "2015-12-31", freq='D', closed=None)
 #     fname = f"AmzFACE_D_CAETE_{EXP[exp]}_spin{spin}"
 #     os.mkdir(f"./{fname}")
-    
+
 #     for lev in idx1:
 #         area_TS = area[lev,:]
 #         area_TS = pd.Series(area_TS, index=idxT1)
