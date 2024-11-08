@@ -383,7 +383,7 @@ contains
 
          if (nppa(p) .gt. 0) then ! .and. 24.0 .ge. temp .and. temp .le. 33.0 .and. 60.0 .ge. prec .and. prec .le. 200.0) then
          
-            print *, "****Reprodução dia", n_days
+            !print *, "****Reprodução dia", n_days
             !print *, "NPP do PLS", p, ":", nppa(p)
             !print *, "Altura do PLS", p, "-->", height_aux(ri)
 
