@@ -958,7 +958,7 @@ class grd:
                     dca[n] = self.vp_dca[c]
                     dcf[n] = self.vp_dcf[c]
                     uptk_costs[n] = self.sp_uptk_costs[c]
-                    #seed_bank_in[n] = self.vp_seed_bank_in[c]
+                    seed_bank_in[n] = self.vp_seed_bank_in[c]
                     
                     
 
@@ -966,7 +966,6 @@ class grd:
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
 
-                seed_bank_in = self.vp_seed_bank_in
 
                 print(f"seed_bank_in{seed_bank_in}")
                 
