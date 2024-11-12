@@ -680,7 +680,7 @@ class grd:
 
         ## NEW (reproduction)
         self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
-        #self.vp_seed_bank_out = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
+        
 
         # self.vp_cleaf, self.vp_croot, self.vp_cwood = m.spinup2(
         #     1.0, self.pls_table)
@@ -965,6 +965,8 @@ class grd:
                     c += 1
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
+
+                seed_bank_in = self.vp_seed_bank_in
 
                 print(f"seed_bank_in{seed_bank_in}")
                 
