@@ -1229,7 +1229,7 @@ class grd:
                     self.cleaf[step] = daily_output['cp'][0]
                     self.cawood[step] = daily_output['cp'][1]
                     self.cfroot[step] = daily_output['cp'][2]
-                    self.seed_bank_in[step] = daily_output['seed_bank_in']
+                    #self.seed_bank_in[step] = daily_output['seed_bank_in']
                     self.co2_abs[step] = daily_output['co2_abs']
                     self.hresp[step] = soil_out['hr']
                     self.csoil[:, step] = soil_out['cs']
