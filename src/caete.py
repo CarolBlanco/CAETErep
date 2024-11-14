@@ -512,6 +512,7 @@ class grd:
                      'cleaf': self.cleaf,
                      'cawood': self.cawood,
                      'cfroot': self.cfroot,
+                     'seed_bank_out_bdgt': self.seed_bank_in,
                      'area': self.area,
                      'wue': self.wue,
                      'cue': self.cue,
