@@ -979,7 +979,7 @@ class grd:
                 top = self.sp_organic_p #+ self.sp_sorganic_p
 
 
-                #print(f"seed_bank_in{seed_bank_in}")
+                print(f"seed_bank_in{seed_bank_in}")
 
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                          self.soil_temp, temp[step], prec[step], julian_day, seed_bank_in, p_atm[step],
@@ -991,7 +991,7 @@ class grd:
                 # Create a dict with the function output
                 daily_output = catch_out_budget(out)
 
-                #print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
+                print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
 
                 self.vp_lsid = np.where(daily_output['ocpavg'] > 0.0)[0]
                 self.vp_ocp = daily_output['ocpavg'][self.vp_lsid]
@@ -1387,7 +1387,7 @@ class grd:
             co2 += next_year
             self.soil_temp = st.soil_temp(self.soil_temp, temp[step])
 
-            #print(f"SPIN-UP: seed_bank_in{seed_bank_in}")
+            print(f"SPIN-UP: seed_bank_in{seed_bank_in}")
 
             out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                      self.soil_temp, temp[step], prec[step], julian_day, seed_bank_in, p_atm[step],
@@ -1399,7 +1399,7 @@ class grd:
             # Create a dict with the function output
             daily_output = catch_out_budget(out)
 
-            #print(f"SPIN-UP: seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
+            print(f"SPIN-UP: seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
 
             runoff = self.swp._update_pool(prec[step], daily_output['evavg'])
 
