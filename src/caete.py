@@ -18,22 +18,24 @@ Copyright 2017- LabTerra
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
-import sys
-import copy
-import _pickle as pkl
-import random as rd
+from datetime import datetime, timedelta
+from pathlib import Path
 from threading import Thread
 from time import sleep
-from pathlib import Path
-import warnings
-import bz2
-import gc
 
-from joblib import load, dump
+import bz2
+import copy
+import gc
+import os
+import pickle as pkl
+import random as rd
+import sys
+import warnings
+
+from joblib import dump
 import cftime
 import numpy as np
-from numpy import log as ln
+
 from hydro_caete import soil_water
 from caete_module import global_par as gp
 from caete_module import budget as model
@@ -291,7 +293,7 @@ class grd:
         self.neighbours = None
 
         self.ls = None          # Number of surviving plss//
-        self.grid_filename = f"gridcell{self.xyname}" 
+        self.grid_filename = f"gridcell{self.xyname}"
         self.out_dir = Path(
             "../outputs/{}/gridcell{}/".format(dump_folder, self.xyname)).resolve()
         self.flush_data = None
@@ -360,7 +362,7 @@ class grd:
         self.uptake_strategy = None
         self.carbon_costs = None
         self.seed_bank_in = None #NEW (module_reproduction)
-        
+
 
         # WATER POOLS
         # Water content for each soil layer
@@ -399,7 +401,7 @@ class grd:
         self.vp_sto = None
         self.vp_lsid = None
 
-    
+
         # Hydraulics
         self.theta_sat = None
         self.psi_sat = None
@@ -465,7 +467,7 @@ class grd:
         self.ls = np.zeros(shape=(n,), order='F')
         self.carbon_costs = np.zeros(shape=(n,), order='F')
         self.seed_bank_in = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
-        
+
 
 
         self.area = np.zeros(shape=(npls, n), order='F')
@@ -583,7 +585,7 @@ class grd:
         self.lim_status = None
         self.carbon_costs = None,
         self.uptake_strategy = None,
-        
+
 
         return to_pickle
 
@@ -795,7 +797,7 @@ class grd:
             end_date   [str]   "yyyymmdd" End model execution
 
             spinup     [int]   Number of repetitions in spinup. 0 for no spinup
-    
+
             fix_co2    [Float] Fixed value for ATM [CO2]
                        [int]   Fixed value for ATM [CO2]
                        [str]   "yyyy" Corresponding year of an ATM [CO2]
@@ -859,6 +861,9 @@ class grd:
         ipar = self.rsds[lb: hb + 1] * 0.5 / 2.18e5
         ru = self.rhs[lb: hb + 1] / 100.0
 
+        first_day_of_simulation = datetime(start.year, start.month, start.day, start.hour, start.minute, start.second)
+        time_step = timedelta(days=1)
+
         year0 = start.year
         co2 = find_co2(year0)
         count_days = start.dayofyr - 2
@@ -878,6 +883,11 @@ class grd:
             fix_co2_p = True
 
         for s in range(spin):
+            # Loop over the days
+            today = first_day_of_simulation
+            # Go back one day
+            today -= time_step
+
             if ABORT:
                 pID = os.getpid()
                 print(f'Closed process PID = {pID}\nGRD = {self.plot_name}\nCOORD = {self.pos}')
@@ -889,6 +899,8 @@ class grd:
                 self._allocate_output_nosave(steps.size)
                 self.save = False
             for step in range(steps.size):
+                today += time_step
+                julian_day = today.timetuple().tm_yday
                 days = 366 if m.leap(year0) == 1 else 365
                 #print('step', step, self.wsoil[step])
                 # print('print wsoil',self.wsoil[step])
@@ -917,7 +929,7 @@ class grd:
                 self.soil_temp = st.soil_temp(self.soil_temp, temp[step])
 
                 # AFEX
-                if count_days == 364 and afex:
+                if julian_day == 364 and afex:
                     with open("afex.cfg", 'r') as afex_cfg:
                         afex_exp = afex_cfg.readlines()
                     afex_exp = afex_exp[0].strip()
@@ -941,8 +953,8 @@ class grd:
                 dcf = np.zeros(npls, order='F')
                 uptk_costs = np.zeros(npls, order='F')
                 seed_bank_in = np.zeros(npls, order='F')
-                
-                
+
+
 
                 sto[0, self.vp_lsid] = self.vp_sto[0, :]
                 sto[1, self.vp_lsid] = self.vp_sto[1, :]
@@ -960,17 +972,18 @@ class grd:
                     uptk_costs[n] = self.sp_uptk_costs[c]
                     #seed_bank_in[n] = self.vp_seed_bank_in[c]
                     seed_bank_in[n] = self.vp_seed_bank_in[c]
-                    
-                    
+
+
 
                     c += 1
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
 
-                print(f"seed_bank_in{seed_bank_in}")
-                
+                # print(f"seed_bank_in{seed_bank_in}")
+                # print(julian_day)
+
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                         self.soil_temp, temp[step], prec[step], count_days, seed_bank_in, p_atm[step],
+                                         self.soil_temp, temp[step], prec[step], julian_day, seed_bank_in, p_atm[step],
                                          ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                          ton, top, self.sp_organic_p, self.sp_csoil, co2, sto, cleaf, cwood, croot,
                                          dcl, dca, dcf, uptk_costs, self.wmax_mm)
@@ -978,8 +991,8 @@ class grd:
                 # del sto, cleaf, cwood, croot, dcl, dca, dcf, uptk_costs
                 # Create a dict with the function output
                 daily_output = catch_out_budget(out)
-                
-                print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
+
+                # print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
 
                 self.vp_lsid = np.where(daily_output['ocpavg'] > 0.0)[0]
                 self.vp_ocp = daily_output['ocpavg'][self.vp_lsid]
@@ -1003,7 +1016,7 @@ class grd:
 
                     ## !! NEW (module_reproduction)
                     self.vp_seed_bank_in = np.zeros(shape=(self.vp_lsid.size,))
-                    
+
 
                     self.vp_dcl = np.zeros(shape=(self.vp_lsid.size,))
                     self.vp_dca = np.zeros(shape=(self.vp_lsid.size,))
@@ -1045,7 +1058,7 @@ class grd:
                 # Plant uptake and Carbon costs of nutrient uptake
                 self.nupt[:, step] = daily_output['nupt']
                 self.pupt[:, step] = daily_output['pupt']
-                
+
                 # CWM of STORAGE_POOL
                 for i in range(3):
                     self.storage_pool[i, step] = np.sum(
@@ -1326,6 +1339,9 @@ class grd:
         ipar = self.rsds[lb: hb + 1] * 0.5 / 2.18e5
         ru = self.rhs[lb: hb + 1] / 100.0
 
+        today = datetime(start.year, start.month, start.day, start.hour, start.minute, start.second)
+        time_step = timedelta(days=1)
+
         year0 = start.year
         co2 = find_co2(year0)
         count_days = start.dayofyr - 2
@@ -1345,11 +1361,13 @@ class grd:
         dca = self.vp_dca
         dcf = self.vp_dcf
         uptk_costs = np.zeros(npls, order='F')
-        
         seed_bank_in = self.vp_seed_bank_in
-        
 
+        today -= time_step
+        # Go back one day
         for step in range(steps.size):
+            today += time_step
+            julian_day = today.timetuple().tm_yday
             loop += 1
             count_days += 1
             # CAST CO2 ATM CONCENTRATION
@@ -1372,7 +1390,7 @@ class grd:
             #print(f"SPIN-UP: seed_bank_in{seed_bank_in}")
 
             out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
-                                     self.soil_temp, temp[step], prec[step], count_days, seed_bank_in, p_atm[step],
+                                     self.soil_temp, temp[step], prec[step], julian_day, seed_bank_in, p_atm[step],
                                      ipar[step], ru[step], self.sp_available_n, self.sp_available_p,
                                      self.sp_snc[:4].sum(), self.sp_so_p, self.sp_snc[4:].sum(), self.sp_csoil,
                                      co2, sto, cleaf, cwood, croot,
@@ -1425,7 +1443,7 @@ class plot(grd):
         """ PREPARE A GRIDCELL TO RUN With PLOT OBSERVED DATA
             sdata : python dict with the proper structure - see the input files e.g. CAETE-DVM/input/central/input_data_175-235.pbz2
             stime_i:  python dict with the proper structure - see the input files e.g. CAETE-DVM/input/central/ISIMIP_HISTORICAL_METADATA.pbz2
-            These dicts are build upon .csv climatic data in the file CAETE-DVM/src/k34_experiment.py where you can find an application of the plot class 
+            These dicts are build upon .csv climatic data in the file CAETE-DVM/src/k34_experiment.py where you can find an application of the plot class
             co2: (list) a alist (association list) with yearly cCO2 ATM data(yyyy\t[CO2]\n)
             pls_table: np.ndarray with functional traits of a set of PLant life strategies
             tsoil, ssoil, hsoil: numpy arrays with soil parameters see the file CAETE-DVM/src/k34_experiment.py

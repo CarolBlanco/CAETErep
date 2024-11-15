@@ -435,6 +435,7 @@ contains
 
 
          !! ANNUAL SEEDBANK DECAY
+         print *, n_days
          if (n_days .eq. 365 .and. seed_bank_out_bdgt(ri) .gt. 0) then
 
             decayed_seed_bank(p) = nint(seed_bank_out_bdgt(ri)*0.25)
