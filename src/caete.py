@@ -392,7 +392,6 @@ class grd:
         self.vp_croot = None
         self.vp_cwood = None
         self.vp_seed_bank_in = None # NEW (module_reproduction)
-        #self.vp_seed_bank_out = None # NEW (module_reproduction)
         self.vp_dcl = None
         self.vp_dca = None
         self.vp_dcf = None
@@ -515,6 +514,7 @@ class grd:
                      'cleaf': self.cleaf,
                      'cawood': self.cawood,
                      'cfroot': self.cfroot,
+                     'seed_bank_out_bdgt': self.seed_bank_in,
                      'area': self.area,
                      'wue': self.wue,
                      'cue': self.cue,
@@ -682,7 +682,7 @@ class grd:
 
         ## NEW (reproduction)
         self.vp_seed_bank_in = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
-        #self.vp_seed_bank_out = np.zeros(shape=(npls,), order='F')# + 1.0 ### + 1????? # !! NEW (module_reproduction)
+
 
         # self.vp_cleaf, self.vp_croot, self.vp_cwood = m.spinup2(
         #     1.0, self.pls_table)
@@ -970,7 +970,6 @@ class grd:
                     dca[n] = self.vp_dca[c]
                     dcf[n] = self.vp_dcf[c]
                     uptk_costs[n] = self.sp_uptk_costs[c]
-                    #seed_bank_in[n] = self.vp_seed_bank_in[c]
                     seed_bank_in[n] = self.vp_seed_bank_in[c]
 
 
@@ -979,8 +978,8 @@ class grd:
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
 
-                # print(f"seed_bank_in{seed_bank_in}")
-                # print(julian_day)
+
+                #print(f"seed_bank_in{seed_bank_in}")
 
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                          self.soil_temp, temp[step], prec[step], julian_day, seed_bank_in, p_atm[step],
@@ -992,7 +991,7 @@ class grd:
                 # Create a dict with the function output
                 daily_output = catch_out_budget(out)
 
-                # print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
+                #print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
 
                 self.vp_lsid = np.where(daily_output['ocpavg'] > 0.0)[0]
                 self.vp_ocp = daily_output['ocpavg'][self.vp_lsid]
@@ -1243,6 +1242,7 @@ class grd:
                     self.cleaf[step] = daily_output['cp'][0]
                     self.cawood[step] = daily_output['cp'][1]
                     self.cfroot[step] = daily_output['cp'][2]
+                    #self.vp_seed_bank_in[step] = daily_output['seed_bank_out_bdgt']
                     self.co2_abs[step] = daily_output['co2_abs']
                     self.hresp[step] = soil_out['hr']
                     self.csoil[:, step] = soil_out['cs']
