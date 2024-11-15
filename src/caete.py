@@ -208,7 +208,8 @@ def catch_out_budget(out):
            "laiavg", "rcavg", "f5avg", "rmavg", "rgavg", "cleafavg_pft", "cawoodavg_pft",
            "cfrootavg_pft", "stodbg", "ocpavg", "wueavg", "cueavg", "c_defavg", "vcmax",
            "specific_la", "nupt", "pupt", "litter_l", "cwd", "litter_fr", "npp2pay", "lnc", "delta_cveg",
-            "seed_bank_out_bdgt", "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm']
+            "seed_bank_out_bdgt", "co2_abs", "limitation_status", "uptk_strat", 'cp', 'c_cost_cwm',
+            'height', 'seed_mass']
 
     return dict(zip(lst, out))
 
@@ -388,10 +389,12 @@ class grd:
         self.sp_sorganic_p = None
 
         # CVEG POOLS
+        self.vp_height = None
         self.vp_cleaf = None
         self.vp_croot = None
         self.vp_cwood = None
         self.vp_seed_bank_in = None # NEW (module_reproduction)
+        self.vp_seed_mass = None
         self.vp_dcl = None
         self.vp_dca = None
         self.vp_dcf = None
@@ -466,8 +469,6 @@ class grd:
         self.ls = np.zeros(shape=(n,), order='F')
         self.carbon_costs = np.zeros(shape=(n,), order='F')
         self.seed_bank_in = np.zeros(shape=(n,), order='F') ## NEW (module_reproduction)
-
-
 
         self.area = np.zeros(shape=(npls, n), order='F')
         self.lim_status = np.zeros(
@@ -588,6 +589,19 @@ class grd:
 
 
         return to_pickle
+
+    def get_state(self):
+        return {
+            "pls_id": self.vp_lsid,
+            "cmass_leaf": self.vp_cleaf,
+            "cmass_wood": self.vp_cwood,
+            "cmass_root": self.vp_croot,
+            "pls_area": self.vp_ocp,
+            "total_seed_mass": self.vp_seed_mass,
+            "seed_bank": self.vp_seed_bank_in,
+            "height": self.vp_height
+
+        }
 
     def _save_output(self, data_obj):
         """Compress and save output data
@@ -971,15 +985,14 @@ class grd:
                     dcf[n] = self.vp_dcf[c]
                     uptk_costs[n] = self.sp_uptk_costs[c]
                     seed_bank_in[n] = self.vp_seed_bank_in[c]
-
-
-
                     c += 1
+
+
                 ton = self.sp_organic_n #+ self.sp_sorganic_n
                 top = self.sp_organic_p #+ self.sp_sorganic_p
 
 
-                print(f"seed_bank_in{seed_bank_in}")
+                # print(f"seed_bank_in{seed_bank_in}")
 
                 out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                          self.soil_temp, temp[step], prec[step], julian_day, seed_bank_in, p_atm[step],
@@ -991,7 +1004,7 @@ class grd:
                 # Create a dict with the function output
                 daily_output = catch_out_budget(out)
 
-                print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
+                # print(f"seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
 
                 self.vp_lsid = np.where(daily_output['ocpavg'] > 0.0)[0]
                 self.vp_ocp = daily_output['ocpavg'][self.vp_lsid]
@@ -1041,6 +1054,14 @@ class grd:
                     self.vp_sto = daily_output['stodbg'][:, self.vp_lsid]
                     self.sp_uptk_costs = daily_output['npp2pay'][self.vp_lsid]
                     self.vp_seed_bank_in = daily_output['seed_bank_out_bdgt'][self.vp_lsid]
+                    self.vp_height = daily_output['height'][self.vp_lsid]
+                    self.vp_seed_mass = daily_output["seed_mass"][self.vp_lsid]
+
+                if save:
+                    if julian_day in {1,31,62,92,123,153,183,214,244,275,305,336}:
+                        with open(f"{self.out_dir}/state_variables_{today.strftime('%Y%m%d')}.pkz", mode="wb") as fh:
+                            # wrapp data
+                            dump(self.get_state(), filename=fh, compress=('lz4', 6))
 
 
                 # UPDATE STATE VARIABLES
@@ -1387,7 +1408,7 @@ class grd:
             co2 += next_year
             self.soil_temp = st.soil_temp(self.soil_temp, temp[step])
 
-            print(f"SPIN-UP: seed_bank_in{seed_bank_in}")
+            # print(f"SPIN-UP: seed_bank_in{seed_bank_in}")
 
             out = model.daily_budget(self.pls_table, self.wp_water_upper_mm, self.wp_water_lower_mm,
                                      self.soil_temp, temp[step], prec[step], julian_day, seed_bank_in, p_atm[step],
@@ -1399,7 +1420,7 @@ class grd:
             # Create a dict with the function output
             daily_output = catch_out_budget(out)
 
-            print(f"SPIN-UP: seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
+            # print(f"SPIN-UP: seed_bank_out_bdgt{daily_output['seed_bank_out_bdgt']}")
 
             runoff = self.swp._update_pool(prec[step], daily_output['evavg'])
 

@@ -81,15 +81,15 @@ def run_experiment(pls_table):
     # The binary files for each repetttion are stored as spinX.pkz elsewhere
     # We run the model trought 450 years to assure a steady state
     cax_grd.run_caete('19790101', '19991231', spinup=5,
-                       fix_co2='1999', save=True, nutri_cycle=False)
+                       fix_co2='1999', save=False, nutri_cycle=False)
 
     cax_grd.run_caete('19790101', '19991231', spinup=15,
-                       fix_co2='1999', save=True)
+                       fix_co2='1999', save=False)
 
     # cax_grd.pr[idx0:idx1 + 1] *= 0.01
 
     # Run the experiment!
-    cax_grd.run_caete('19790101', '20151231', spinup=1, save=True)
+    cax_grd.run_caete('19790101', '20151231', spinup=1)
     tm.close()
     return cax_grd
 

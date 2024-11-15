@@ -32,7 +32,8 @@ contains
         &, laiavg, rcavg, f5avg, rmavg, rgavg, cleafavg_pft, cawoodavg_pft&
         &, cfrootavg_pft, storage_out_bdgt_1, ocpavg, wueavg, cueavg, c_defavg&
         &, vcmax_1, specific_la_1, nupt_1, pupt_1, litter_l_1, cwd_1, litter_fr_1, npp2pay_1, lit_nut_content_1&
-        &, delta_cveg_1, seed_bank_out_bdgt, co2_abs_se_1, limitation_status_1, uptk_strat_1, cp, c_cost_cwm)
+        &, delta_cveg_1, seed_bank_out_bdgt, co2_abs_se_1, limitation_status_1, uptk_strat_1, cp, c_cost_cwm&
+        &, height_aux, seed_mass_out_budg)
 
 
       use types
@@ -115,7 +116,7 @@ contains
       real(r_8),dimension(npls),intent(out) ::  npp2pay_1 ! C costs of N/P uptake
       real(r_8),dimension(4),intent(out) :: cp ! Aux cp(1:3) CVEG C POOLS cp(4) Auxiliary to HR
       real(r_8),intent(out) :: c_cost_cwm
-      real(r_8),dimension(npls),intent(out) ::  seed_bank_out_bdgt !! NEW (module_reproduction)
+      real(r_8),dimension(npls),intent(out) ::  seed_bank_out_bdgt, height_aux, seed_mass_out_budg !! NEW (module_reproduction)
 
       !     -----------------------Internal Variables------------------------
       integer(i_4) :: p, counter, nlen, ri, i, j
@@ -192,7 +193,7 @@ contains
       real(r_8), dimension(3,npls) :: sto_budg
       real(r_8) :: soil_sat, ar_aux
       real(r_8), dimension(:), allocatable :: idx_grasses, idx_pdia
-      real(r_8), dimension(npls) :: diameter_aux, crown_aux, height_aux
+      real(r_8), dimension(npls) :: diameter_aux, crown_aux
       real(r_8), dimension(npls) :: delta_biomass
       real(r_8) :: max_height
 
@@ -216,6 +217,7 @@ contains
          nwood(i) = nwood_in(i)
          nroot(i) = nroot_in(i)
          uptk_costs(i) = uptk_costs_in(i)
+         seed_mass_out_budg(i) = 0.0D0
 
 
 
@@ -393,6 +395,8 @@ contains
                !print *, "Tamanho do banco de sementes do PLS n.", p, "antes da nova produção_na_budget:", seed_bank_int_repro(p)
 
                call repro(nppa(p), height_aux(ri), seed_mass(p), n_seed(p))
+               
+               seed_mass_out_budg(ri) = max(seed_mass(p), 0.0D0)
 
                !print *, "Número de sementes produzidas pelo PLS", p, "-->", n_seed(p)
 
