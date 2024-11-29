@@ -33,7 +33,7 @@ soil_texture = np.load("../input/hydra/soil_text.npy")
 hsoil = (theta_sat, psi_sat, soil_texture)
 
 # Read time metadata
-with bz2.BZ2File("../cax/ISIMIP_HISTORICAL_METADATA.pbz2", mode='rb') as fh:
+with bz2.BZ2File("../k34/ISIMIP_HISTORICAL_METADATA.pbz2", mode='rb') as fh:
     mdt = pkl.load(fh)
 stime = copy.deepcopy(mdt[0])
 
@@ -43,7 +43,7 @@ with open(co2) as fh:
     co2_data = fh.readlines()
 
 #
-def apply_spin(grid):
+def apply_pre_spin(grid):
     """pre-spinup use some outputs of daily budget (water, litter C, N and P) to start soil organic pools"""
     w, ll, cwd, rl, lnc = grid.bdg_spinup(
         start_date="19790101", end_date="19830101")
@@ -51,7 +51,7 @@ def apply_spin(grid):
     return grid
 
 
-def run_experiment(pls_table):
+def run_experiment(pls_table, name='CAX-ISIMIP'):
         # Open a dataset with the Standard time variable
     tm = nc.Dataset("./time_ISIMIP_hist_obs.nc4", 'r')
     tm1 = tm.variables["time"]
@@ -66,25 +66,25 @@ def run_experiment(pls_table):
 
     print(idx0, idx1)
     # # Create the plot object
-    sdata = Path("../cax").resolve()
-    cax_grd = mod.grd(257, 183, 'CAX-ISIMIP')
+    sdata = Path("../k34").resolve()
+    cax_grd = mod.grd(240, 185, name)
 
     # Fill the plot object with input data
     cax_grd.init_caete_dyn(sdata, stime_i=stime, co2=co2_data,
                        pls_table=pls_table, tsoil=tsoil,
                        ssoil=ssoil, hsoil=hsoil)
 
-    # # Apply a numerical spinup in the soil pools of resources
-    cax_grd = apply_spin(cax_grd)
+    # # Apply a spinup in the soil pools of resources
+    cax_grd = apply_pre_spin(cax_grd)
 
     # Run the first sequence of repetitions with co2 fixed at 2000 year values
     # The binary files for each repetttion are stored as spinX.pkz elsewhere
     # We run the model trought 450 years to assure a steady state
     cax_grd.run_caete('19790101', '19991231', spinup=5,
-                       fix_co2='1999', save=False, nutri_cycle=False)
+                       fix_co2='1979', save=False, nutri_cycle=False)
 
     cax_grd.run_caete('19790101', '19991231', spinup=15,
-                       fix_co2='1999', save=False)
+                       fix_co2='1979', save=False)
 
     # cax_grd.pr[idx0:idx1 + 1] *= 0.01
 
@@ -92,7 +92,6 @@ def run_experiment(pls_table):
     cax_grd.run_caete('19790101', '20151231', spinup=1)
     tm.close()
     return cax_grd
-
 
 
 def get_spin(grd: mod.grd, spin) -> dict:
@@ -106,11 +105,14 @@ def get_spin(grd: mod.grd, spin) -> dict:
     return spin_dt
 
 
+def get_monthly_state(grd:mod.grd):
+    pass
 
 if __name__ == "__main__":
     pass
     pls_table = pls.table_gen(100, Path("./CAX_PLS_TABLE"))
-    cax = run_experiment(pls_table)
+    cax = run_experiment(pls_table, name="output_rep")
+
 
 
 # def pk2csv1(grd: mod.plot, spin) -> pd.DataFrame:

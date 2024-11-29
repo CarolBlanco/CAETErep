@@ -287,6 +287,7 @@ class grd:
         self.pos = (int(self.x), int(self.y))
         self.pls_table = None   # will receive the np.array with functional traits data
         self.outputs = {}       # dict, store filepaths of output data
+        self.state_output = {}
         self.realized_runs = []
         self.experiments = 1
         # counts the execution of a time slice (a call of self.run_spinup)
@@ -1059,10 +1060,11 @@ class grd:
 
                 if save:
                     if julian_day in {1,31,62,92,123,153,183,214,244,275,305,336}:
-                        with open(f"{self.out_dir}/state_variables_{today.strftime('%Y%m%d')}.pkz", mode="wb") as fh:
-                            # wrapp data
+                        filename_date = today.strftime('%Y%m%d')
+                        filename = Path(f"{self.out_dir}/state_variables_{filename_date}.pkz")
+                        self.state_output[filename_date] = filename
+                        with open(filename, mode="wb") as fh:
                             dump(self.get_state(), filename=fh, compress=('lz4', 6))
-
 
                 # UPDATE STATE VARIABLES
                 # WATER CWM
